@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Remake Nedir? - Game+ Blog - V3</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; color: #e5e7eb; line-height: 1.65; background: #000; }
+  h1 { font-size: 2.1em; line-height: 1.25; margin: 16px 0 16px; color: #fff; letter-spacing: -0.01em; }
+  h2 { font-size: 1.5em; line-height: 1.3; margin: 40px 0 14px; color: #fff; letter-spacing: -0.01em; }
+  h3 { font-size: 1.2em; line-height: 1.35; margin: 30px 0 12px; color: #f3f4f6; }
+  h4 { font-size: 1.05em; margin: 22px 0 10px; color: #e5e7eb; }
+  p { margin: 12px 0; color: #cbd5e1; }
+  ul, ol { margin: 14px 0; padding-left: 24px; color: #cbd5e1; }
+  li { margin: 6px 0; }
+  ul li p, ol li p { margin: 0; }
+  a { color: #a3e635; text-decoration: underline; }
+  a:hover { color: #76b900; }
+  em { font-style: italic; }
+  strong { font-weight: 600; color: #f3f4f6; }
+</style>
+</head>
+<body>
+<style>
+@property --gp-conic-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes gameplus-border-shimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes gp-rotate-conic {
+  to { --gp-conic-angle: 360deg; }
+}
+@keyframes gp-pulse-plus {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.18); opacity: 0.85; }
+}
+.gp-animated-border { position: relative; border-radius: 12px; padding: 1px; background: linear-gradient(110deg, #76b900 0%, #f59e0b 30%, #76b900 60%, #f59e0b 100%); background-size: 300% 100%; animation: gameplus-border-shimmer 6s ease-in-out infinite; }
+.gp-animated-border > .gp-inner { background: transparent; border-radius: 11px; padding: 22px 24px; }
+/* V8: Rotating Conic Glow border */
+.gp-conic { position: relative; border-radius: 12px; padding: 1.5px; }
+.gp-conic::before {
+  content:''; position:absolute; inset:0; border-radius:12px; padding:1.5px;
+  background: conic-gradient(from var(--gp-conic-angle,0deg), transparent 0deg, var(--gp-glow,#76b900) 60deg, transparent 120deg, transparent 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  animation: gp-rotate-conic 6s linear infinite;
+  pointer-events: none;
+}
+.gp-conic > .gp-conic-inner { background:transparent; border-radius:10.5px; position:relative; }
+/* V9: Layered Frame */
+.gp-layer { position:relative; border-radius:12px; border:1px solid var(--gp-frame,rgba(118,185,0,0.22)); background:transparent; }
+.gp-cell { position:relative; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:14px 16px; }
+.gp-layer::before { content:''; position:absolute; inset:5px; border:1px solid rgba(255,255,255,0.04); border-radius:8px; pointer-events:none; }
+/* FAQ + sign pulsing animation */
+.faq-item .faq-icon { animation: gp-pulse-plus 2.2s ease-in-out infinite; }
+.gp-card-table-inner .card-row:last-child { border-bottom: none !important; }
+.gp-card-table-inner .card-row { position: relative; }
+.gp-card-table-inner a.card-row { text-decoration: none !important; color: inherit !important; }
+/* Hover Slide Accent: colored bar slides in from left on hover (Steam list vibe) */
+.gp-card-table-inner .card-row::before { content:''; position:absolute; left:0; top:0; bottom:0; width:0; background:var(--row-c,#76b900); transition:width 0.2s ease; }
+.gp-card-table-inner .card-row:hover::before { width:4px; }
+.gp-card-table-inner .card-row:hover { background: rgba(255,255,255,0.025) !important; }
+.gp-card-table-inner a.card-row:hover .gp-name { color: #fff !important; }
+/* Comparison table fixes */
+.table-wrap tbody tr:last-child td { border-bottom: none !important; }
+.table-wrap table { border-radius: 12px; }
+/* FAQ + indicator */
+.faq-item .faq-icon { transition: transform 0.25s ease, color 0.2s; }
+.faq-item[open] .faq-icon { transform: rotate(45deg); color: #76b900 !important; }
+.faq-item summary:hover .faq-icon { color: #f59e0b; }
+/* YouTube embed wrapper smaller + centered */
+.gp-yt-wrap { max-width: 720px; margin: 1.5em auto !important; box-shadow: 0 4px 14px rgba(0,0,0,0.5); }
+/* Mobile: card-table responsive */
+@media (max-width: 700px) {
+  .gp-card-table-inner .card-row {
+    grid-template-columns: auto 1fr !important;
+    grid-template-rows: auto auto;
+    gap: 6px 12px !important;
+    padding: 14px 16px !important;
+  }
+  .gp-card-table-inner .card-row > .gp-badge {
+    grid-row: 1; grid-column: 1;
+    font-size: 0.54em !important;
+    min-width: auto !important;
+    padding: 4px 9px !important;
+    letter-spacing: 0.08em !important;
+  }
+  .gp-card-table-inner .card-row > .gp-name {
+    grid-row: 1; grid-column: 2;
+    font-size: 0.95em !important;
+    align-self: center;
+  }
+  .gp-card-table-inner .card-row > .gp-meta {
+    grid-row: 2; grid-column: 1 / -1;
+    text-align: left !important;
+    font-size: 0.78em !important;
+    padding-left: 0 !important;
+  }
+  .gp-game-inline > aside { float: none !important; width: 100% !important; margin: 0 0 16px 0 !important; }
+  .gp-yt-wrap { margin: 1em auto !important; }
+}
+</style>
+<h1>Remake Nedir? En İyi &amp; En Çok Beklenen Remake Oyunlar</h1>
+<div class="article-meta" style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:0.85em;color:#8b95a7;margin:0 0 20px;padding:12px 0;border-bottom:1px solid #1f1f1f;">
+  <span style="display:inline-flex;align-items:center;background:transparent;padding:6px 14px;border-radius:999px;color:#fbbf24;font-weight:700;border:1px solid #1f1f1f;letter-spacing:0.02em;"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:6px;flex-shrink:0;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>GAME+ Blog</span>
+  <span style="display:inline-flex;align-items:center;font-weight:500;color:#8b95a7;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;flex-shrink:0;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Güncellenme: 2026</span>
+</div>
+<details class="floating-toc" style="position:fixed;top:120px;right:0;z-index:100;max-width:300px;border:1px solid #2a2a2a;border-right:none;border-radius:12px 0 0 12px;background:#000;box-shadow:-6px 6px 24px rgba(0,0,0,0.7);">
+  <summary style="display:flex;align-items:center;padding:13px 18px;background:#000;color:#fff;cursor:pointer;font-weight:800;list-style:none;border-radius:12px 0 0 0;user-select:none;letter-spacing:-0.005em;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:8px;flex-shrink:0;"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg><span>İçindekiler</span></summary>
+  <ul style="margin:0;padding:14px 18px 14px 12px;font-size:0.88em;max-height:60vh;overflow-y:auto;list-style:none;">
+    <li style="margin:8px 0;padding-left:4px;font-size:0.95em;list-style:none;"><a href="#remake-remaster-ve-reboot-arasindaki-fark" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:600;letter-spacing:-0.005em;">Remake, Remaster ve Reboot Arasındaki Fark</a></li>
+    <li style="margin:8px 0;padding-left:4px;font-size:0.95em;list-style:none;"><a href="#remake-oyunlarin-gucu-tanidik-hikayeler-yeni-deneyimler" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:600;letter-spacing:-0.005em;">Remake Oyunların Gücü: Tanıdık Hikayeler, Yeni Deneyimler</a></li>
+    <li style="margin:8px 0;padding-left:4px;font-size:0.95em;list-style:none;"><a href="#efsaneleri-yeniden-parlatan-en-i-yi-remake-oyunlar" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:600;letter-spacing:-0.005em;">Efsaneleri Yeniden Parlatan En İyi Remake Oyunlar</a></li>
+    <li style="margin:8px 0;padding-left:18px;font-size:0.86em;list-style:none;"><a href="#resident-evil-2-remake" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:500;letter-spacing:-0.005em;">Resident Evil 2 Remake</a></li>
+    <li style="margin:8px 0;padding-left:18px;font-size:0.86em;list-style:none;"><a href="#resident-evil-4-remake" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:500;letter-spacing:-0.005em;">Resident Evil 4 Remake</a></li>
+    <li style="margin:8px 0;padding-left:18px;font-size:0.86em;list-style:none;"><a href="#dead-space-remake" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:500;letter-spacing:-0.005em;">Dead Space Remake</a></li>
+    <li style="margin:8px 0;padding-left:18px;font-size:0.86em;list-style:none;"><a href="#silent-hill-2-remake" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:500;letter-spacing:-0.005em;">Silent Hill 2 Remake</a></li>
+    <li style="margin:8px 0;padding-left:18px;font-size:0.86em;list-style:none;"><a href="#final-fantasy-vii-remake" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:500;letter-spacing:-0.005em;">Final Fantasy VII Remake</a></li>
+    <li style="margin:8px 0;padding-left:18px;font-size:0.86em;list-style:none;"><a href="#final-fantasy-vii-rebirth" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:500;letter-spacing:-0.005em;">Final Fantasy VII Rebirth</a></li>
+    <li style="margin:8px 0;padding-left:18px;font-size:0.86em;list-style:none;"><a href="#demon-s-souls-remake" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:500;letter-spacing:-0.005em;">Demon’s Souls Remake</a></li>
+    <li style="margin:8px 0;padding-left:18px;font-size:0.86em;list-style:none;"><a href="#shadow-of-the-colossus-remake" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:500;letter-spacing:-0.005em;">Shadow of the Colossus Remake</a></li>
+    <li style="margin:8px 0;padding-left:18px;font-size:0.86em;list-style:none;"><a href="#persona-3-reload" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:500;letter-spacing:-0.005em;">Persona 3 Reload</a></li>
+    <li style="margin:8px 0;padding-left:18px;font-size:0.86em;list-style:none;"><a href="#metal-gear-solid-delta-snake-eater" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:500;letter-spacing:-0.005em;">Metal Gear Solid Delta: Snake Eater</a></li>
+    <li style="margin:8px 0;padding-left:18px;font-size:0.86em;list-style:none;"><a href="#the-last-of-us-part-i" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:500;letter-spacing:-0.005em;">The Last of Us Part I</a></li>
+    <li style="margin:8px 0;padding-left:18px;font-size:0.86em;list-style:none;"><a href="#crash-bandicoot-n-sane-trilogy" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:500;letter-spacing:-0.005em;">Crash Bandicoot N. Sane Trilogy</a></li>
+    <li style="margin:8px 0;padding-left:4px;font-size:0.95em;list-style:none;"><a href="#radarimizdaki-remake-oyunlar-god-of-war-ve-daha-fazlasi" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:600;letter-spacing:-0.005em;">Radarımızdaki Remake Oyunlar: God of War ve Daha Fazlası</a></li>
+    <li style="margin:8px 0;padding-left:18px;font-size:0.86em;list-style:none;"><a href="#assassin-s-creed-black-flag-resynced" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:500;letter-spacing:-0.005em;">Assassin’s Creed Black Flag Resynced</a></li>
+    <li style="margin:8px 0;padding-left:18px;font-size:0.86em;list-style:none;"><a href="#god-of-war-greek-trilogy-remake" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:500;letter-spacing:-0.005em;">God of War Greek Trilogy Remake</a></li>
+    <li style="margin:8px 0;padding-left:18px;font-size:0.86em;list-style:none;"><a href="#max-payne-1-amp-2-remake" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:500;letter-spacing:-0.005em;">Max Payne 1 &amp; 2 Remake</a></li>
+    <li style="margin:8px 0;padding-left:18px;font-size:0.86em;list-style:none;"><a href="#splinter-cell-remake" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:500;letter-spacing:-0.005em;">Splinter Cell Remake</a></li>
+    <li style="margin:8px 0;padding-left:18px;font-size:0.86em;list-style:none;"><a href="#prince-of-persia-the-sands-of-time-remake" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:500;letter-spacing:-0.005em;">Prince of Persia: The Sands of Time Remake</a></li>
+    <li style="margin:8px 0;padding-left:18px;font-size:0.86em;list-style:none;"><a href="#diger-beklenen-ve-konusulan-remake-ler" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:500;letter-spacing:-0.005em;">Diğer Beklenen ve Konuşulan Remake’ler</a></li>
+    <li style="margin:8px 0;padding-left:4px;font-size:0.95em;list-style:none;"><a href="#remake-oyun-secerken-nelere-dikkat-edilmeli" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:600;letter-spacing:-0.005em;">Remake Oyun Seçerken Nelere Dikkat Edilmeli?</a></li>
+    <li style="margin:8px 0;padding-left:4px;font-size:0.95em;list-style:none;"><a href="#sikca-sorulan-sorular" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:600;letter-spacing:-0.005em;">Sıkça Sorulan Sorular</a></li>
+    <li style="margin:8px 0;padding-left:18px;font-size:0.86em;list-style:none;"><a href="#remake-ve-remastered-oyunlarin-farki-nedir" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:500;letter-spacing:-0.005em;">Remake ve Remastered Oyunların Farkı Nedir?</a></li>
+    <li style="margin:8px 0;padding-left:18px;font-size:0.86em;list-style:none;"><a href="#remake-oyun-ne-demek" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:500;letter-spacing:-0.005em;">Remake Oyun Ne Demek?</a></li>
+    <li style="margin:8px 0;padding-left:18px;font-size:0.86em;list-style:none;"><a href="#oyunda-remake-nasil-yapilir" onclick="this.closest('details').removeAttribute('open')" style="color:#cbd5e1;text-decoration:none;font-weight:500;letter-spacing:-0.005em;">Oyunda Remake Nasıl Yapılır?</a></li>
+  </ul>
+</details>
+<style>
+  .floating-toc:not([open]) { border: none !important; background: transparent !important; box-shadow: none !important; }
+  .floating-toc:not([open]) > summary { border-radius: 12px 0 0 12px !important; box-shadow: -4px 4px 14px rgba(0,0,0,0.6); border: 1px solid #2a2a2a; border-right: none; background: #000 !important; }
+  .floating-toc summary::-webkit-details-marker { display: none; }
+  .floating-toc summary::marker { display: none; }
+  .floating-toc ul li a:hover { color: #76b900 !important; }
+  @media (max-width: 900px) {
+    .floating-toc { top: auto !important; bottom: 16px !important; max-width: 240px !important; }
+  }
+</style>
+<div class="tldr-block gp-conic" style="--gp-glow:#76b900;margin:22px 0;box-shadow:0 4px 20px rgba(0,0,0,0.5);">
+  <div class="gp-conic-inner" style="padding:18px 22px;font-size:0.92em;">
+    <h3 style="margin:0 0 12px 0;font-size:1em;font-weight:800;letter-spacing:-0.005em;display:flex;align-items:center;color:#76b900;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px;margin-right:8px;flex-shrink:0;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg><span style="color:#fff;">Hızlı Özet</span></h3>
+    <ul style="margin:0;padding:0;color:#cbd5e1;list-style:none;">
+    <li style="display:flex;gap:11px;margin:8px 0;list-style:none;align-items:flex-start;line-height:1.5;"><span style="flex-shrink:0;margin-top:3px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#76b900" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Remake nedir:</strong> Eski oyunun güncel teknoloji ve modern mekaniklerle baştan inşa edilmesi.</span></li>
+    <li style="display:flex;gap:11px;margin:8px 0;list-style:none;align-items:flex-start;line-height:1.5;"><span style="flex-shrink:0;margin-top:3px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#76b900" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Remake, Remaster ve Reboot:</strong> Üçü farklı kapsam, remake en derin yeniden yapım.</span></li>
+    <li style="display:flex;gap:11px;margin:8px 0;list-style:none;align-items:flex-start;line-height:1.5;"><span style="flex-shrink:0;margin-top:3px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#76b900" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>En iyi 12 remake:</strong> Resident Evil 2/4, Dead Space, Silent Hill 2, FF VII Remake/Rebirth, Demon's Souls, Shadow of the Colossus, Persona 3 Reload, MGS Delta, TLOU Part I, Crash N. Sane Trilogy.</span></li>
+    <li style="display:flex;gap:11px;margin:8px 0;list-style:none;align-items:flex-start;line-height:1.5;"><span style="flex-shrink:0;margin-top:3px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#76b900" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polyline points="20 6 9 17 4 12"/></svg></span><span><strong>Beklenen 5 remake:</strong> AC Black Flag Resynced, God of War Trilogy, Max Payne 1+2, Splinter Cell, Prince of Persia (durdu).</span></li>
+    </ul>
+  </div>
+</div>
+<div class="info-card" style="margin:18px 0 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;">
+  <div class="gp-cell">
+    <span style="display:block;font-size:0.62em;color:#76b900;text-transform:uppercase;letter-spacing:0.14em;margin-bottom:5px;font-weight:800;">İncelenen Remake</span>
+    <span style="font-size:1.02em;font-weight:700;color:#fff;letter-spacing:-0.005em;">12 Yapım</span>
+  </div>
+  <div class="gp-cell">
+    <span style="display:block;font-size:0.62em;color:#76b900;text-transform:uppercase;letter-spacing:0.14em;margin-bottom:5px;font-weight:800;">Beklenen Remake</span>
+    <span style="font-size:1.02em;font-weight:700;color:#fff;letter-spacing:-0.005em;">5 Yapım</span>
+  </div>
+  <div class="gp-cell">
+    <span style="display:block;font-size:0.62em;color:#76b900;text-transform:uppercase;letter-spacing:0.14em;margin-bottom:5px;font-weight:800;">Öne Çıkan Stüdyo</span>
+    <span style="font-size:1.02em;font-weight:700;color:#fff;letter-spacing:-0.005em;">Capcom</span>
+  </div>
+  <div class="gp-cell">
+    <span style="display:block;font-size:0.62em;color:#76b900;text-transform:uppercase;letter-spacing:0.14em;margin-bottom:5px;font-weight:800;">Türler</span>
+    <span style="font-size:1.02em;font-weight:700;color:#fff;letter-spacing:-0.005em;">Korku · RPG · Aksiyon</span>
+  </div>
+</div>
+<p><em>Efsane oyunlar modern teknolojiyle küllerinden doğuyor! Piksellerin yerini kusursuz bir gerçekçiliğe bıraktığı bu devasa dönüşümde, hafızalara kazınan o kült sahneleri yeniden deneyimlemeye hazır mısın?</em></p><p>Bazı oyunlar vardır ki üzerinden yıllar geçse de tadı damağımızda kalır ama o eski grafikleri ve hantal kontrolleri günümüzde bizi biraz üzer. İşte tam bu noktada, o çok sevdiğimiz dünyaları modern teknolojinin gücüyle baştan inşa eden Remake fırtınasına kapılıyoruz. Bu yazımızda, kafaları karıştıran o teknik terimleri rafa kaldırıyor ve oyun dünyasının yeniden doğuş operasyonlarını mercek altına alıyoruz. Hazırsan, bu heyecan dolu listeye giriş yapalım!</p><h2 id="remake-remaster-ve-reboot-arasindaki-fark">Remake, Remaster ve Reboot Arasındaki Fark</h2><p>Remake, eski bir oyunun güncel teknolojiyle baştan aşağı yeniden inşa edilmesi anlamına geliyor. Remake ile oyunda sadece görsellik değil oynanış sistemleri, kamera açıları, sesler ve hatta bazen hikaye anlatımı bile modern standartlara göre tekrar şekilleniyor.</p><p>Remaster kavramı, aslında mevcut bir oyunun teknik performansını artırma amacını taşıyor. Oyunun temel yapısı ve kodları aynı kalırken; çözünürlük, kaplama kalitesi ve kare hızı gibi görsel unsurlar iyileştiriliyor. Reboot ise, bir serinin geçmişini tamamen sıfırlayıp her şeyi en baştan başlatıyor. Oyunun adı aynı kalsa bile hikaye, karakterlerin motivasyonları ve içinde bulundukları evren tamamen değişebiliyor.</p>
+<div class="table-wrap gp-layer" style="--gp-frame:rgba(118,185,0,0.22);margin:22px 0;box-shadow:0 4px 18px rgba(0,0,0,0.5);overflow:hidden;">
+  <div style="overflow-x:auto;position:relative;z-index:1;">
+    <table style="width:100%;border-collapse:collapse;background:transparent;">
+      <thead><tr><th style="padding:12px 18px;text-align:left;border-bottom:1px solid rgba(118,185,0,0.18);font-weight:800;background:transparent;color:#76b900;font-size:0.65em;letter-spacing:0.16em;text-transform:uppercase;">Tip</th><th style="padding:12px 18px;text-align:left;border-bottom:1px solid rgba(118,185,0,0.18);font-weight:800;background:transparent;color:#76b900;font-size:0.65em;letter-spacing:0.16em;text-transform:uppercase;">Kapsam</th><th style="padding:12px 18px;text-align:left;border-bottom:1px solid rgba(118,185,0,0.18);font-weight:800;background:transparent;color:#76b900;font-size:0.65em;letter-spacing:0.16em;text-transform:uppercase;">Ne Değişir?</th><th style="padding:12px 18px;text-align:left;border-bottom:1px solid rgba(118,185,0,0.18);font-weight:800;background:transparent;color:#76b900;font-size:0.65em;letter-spacing:0.16em;text-transform:uppercase;">Örnek</th></tr></thead>
+      <tbody>
+<tr><td style="padding:11px 18px;vertical-align:top;border-bottom:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.015);color:#cbd5e1;line-height:1.5;font-size:0.92em;"><strong>Remake</strong></td><td style="padding:11px 18px;vertical-align:top;border-bottom:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.015);color:#cbd5e1;line-height:1.5;font-size:0.92em;">En geniş</td><td style="padding:11px 18px;vertical-align:top;border-bottom:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.015);color:#cbd5e1;line-height:1.5;font-size:0.92em;">Görsel + oynanış + ses + bazen hikaye</td><td style="padding:11px 18px;vertical-align:top;border-bottom:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.015);color:#cbd5e1;line-height:1.5;font-size:0.92em;">Resident Evil 4 Remake, FF VII Remake</td></tr>
+<tr><td style="padding:11px 18px;vertical-align:top;border-bottom:1px solid rgba(255,255,255,0.04);color:#cbd5e1;line-height:1.5;font-size:0.92em;"><strong>Remaster</strong></td><td style="padding:11px 18px;vertical-align:top;border-bottom:1px solid rgba(255,255,255,0.04);color:#cbd5e1;line-height:1.5;font-size:0.92em;">Teknik iyileştirme</td><td style="padding:11px 18px;vertical-align:top;border-bottom:1px solid rgba(255,255,255,0.04);color:#cbd5e1;line-height:1.5;font-size:0.92em;">Çözünürlük, doku, FPS</td><td style="padding:11px 18px;vertical-align:top;border-bottom:1px solid rgba(255,255,255,0.04);color:#cbd5e1;line-height:1.5;font-size:0.92em;">Skyrim Anniversary, Halo MCC</td></tr>
+<tr><td style="padding:11px 18px;vertical-align:top;background:rgba(255,255,255,0.015);color:#cbd5e1;line-height:1.5;font-size:0.92em;"><strong>Reboot</strong></td><td style="padding:11px 18px;vertical-align:top;background:rgba(255,255,255,0.015);color:#cbd5e1;line-height:1.5;font-size:0.92em;">Hikaye sıfırlama</td><td style="padding:11px 18px;vertical-align:top;background:rgba(255,255,255,0.015);color:#cbd5e1;line-height:1.5;font-size:0.92em;">Karakter, hikaye, evren tamamen yeni</td><td style="padding:11px 18px;vertical-align:top;background:rgba(255,255,255,0.015);color:#cbd5e1;line-height:1.5;font-size:0.92em;">God of War (2018), Tomb Raider (2013)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="cta-paketler gp-conic" style="--gp-glow:#76b900;margin:30px 0;box-shadow:0 6px 24px rgba(0,0,0,0.55);">
+<div class="gp-conic-inner gp-layer" style="--gp-frame:rgba(118,185,0,0.22);padding:22px 24px;">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;position:relative;z-index:1;">
+    <span style="display:inline-block;background:#76b900;color:#fff;padding:4px 11px;border-radius:999px;font-size:0.6em;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;box-shadow:inset 0 1px 0 rgba(255,255,255,0.18);">GeForce NOW</span>
+  </div>
+  <div style="font-weight:800;font-size:1.2em;margin-bottom:8px;line-height:1.3;color:#fff;letter-spacing:-0.01em;position:relative;z-index:1;">Sahip olduğun remake yapımlarını bulutta oyna!</div>
+  <p style="color:#cbd5e1;margin:0 0 16px 0;line-height:1.55;font-size:0.93em;position:relative;z-index:1;">Resident Evil 4 Remake'ten Final Fantasy VII Rebirth'e, satın almış olduğun ve GeForce NOW destekli remake yapımlarını Performance veya Ultimate paketle saniyeler içinde başlatabilirsin.</p>
+  <a href="https://gameplus.com.tr/gfn/paketler" style="display:inline-flex;align-items:center;background:#76b900;color:#fff;padding:11px 22px;border-radius:6px;font-weight:700;text-decoration:none;letter-spacing:-0.005em;box-shadow:0 2px 8px rgba(118,185,0,0.35);font-size:0.94em;position:relative;z-index:1;">GeForce NOW Paketlerini İncele<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-left:6px;flex-shrink:0;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+</div>
+</div>
+<h2 id="remake-oyunlarin-gucu-tanidik-hikayeler-yeni-deneyimler">Remake Oyunların Gücü: Tanıdık Hikayeler, Yeni Deneyimler</h2><p>Oyun dünyasında nostalji, sadece geçmişi yad etmekten çok daha büyük bir itici güç yaratıyor. Oyuncular, çocukluklarında veya gençliklerinde hayran kaldıkları o kült hikayeleri bugünün akılalmaz teknolojisiyle tekrar deneyimlemek istiyor. Stüdyolar için ise bu projeler; halihazırda bilinen bir marka değeri, kemikleşmiş bir hayran kitlesi ve eski bir efsaneyi yeni nesil platformlara taşıma fırsatı anlamına geliyor. Ancak başarılı bir remake, sadece eskiyi tekrar satmak gibi basit bir amaç gütmüyor. İyi yapılmış bir remake; atmosferi, kamera açılarını, kontrolleri ve tempoyu modern standartlara göre baştan aşağıya tekrar kurguluyor. Özellikle Capcom, <a href="https://gameplus.com.tr/blog/resident-evil-serisi-oyunlarin-hikayeye-gore-kronolojik-siralamasi">Resident Evil serisi</a> gibi yapımlar remake konusunda adeta ders niteliğinde bir başarı öyküsü yazıyor.</p>
+<div class="editor-note gp-layer" style="--gp-frame:rgba(59,130,246,0.22);margin:22px 0;padding:14px 18px;box-shadow:0 2px 12px rgba(0,0,0,0.4);">
+  <div style="position:relative;z-index:1;">
+    <div style="display:flex;align-items:center;font-weight:800;margin-bottom:6px;color:#93c5fd;font-size:0.72em;letter-spacing:0.12em;text-transform:uppercase;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px;margin-right:8px;flex-shrink:0;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>Game+ Editör Notu</div>
+    <p style="margin:0;color:#cbd5e1;line-height:1.55;font-size:0.94em;">Capcom, RE Engine ile Resident Evil 2, 3 ve 4 remake'lerini ardı ardına yayımladı. Üçü de eleştirmen skorları ve satış rakamlarıyla remake türünün modern referansı haline geldi.</p>
+  </div>
+</div>
+<h2 id="efsaneleri-yeniden-parlatan-en-i-yi-remake-oyunlar">Efsaneleri Yeniden Parlatan En İyi Remake Oyunlar</h2><p>Sadece pikselleri parlatmakla yetinmeyip çocukluğumuzun efsanelerini birer başyapıta dönüştüren ve bazıları <a href="https://gameplus.com.tr/blog/2026-nin-en-beklenen-korku-oyunlari">en iyi korku oyunları 2026</a> listelerinin vazgeçilmezi olan bu dev yapımları gel birlikte inceleyelim:</p><div class="card-table-wrap" style="margin:28px 0;">
+  <div style="text-align:center;margin-bottom:14px;">
+    <h3 style="display:inline-flex;align-items:center;justify-content:center;font-size:1.3em;font-weight:800;letter-spacing:-0.01em;margin:0;">
+      <svg width="24" height="24" viewBox="0 0 24 24" style="vertical-align:-6px;margin-right:10px;flex-shrink:0;"><defs><linearGradient id="gp-grad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#76b900"/><stop offset="100%" stop-color="#f59e0b"/></linearGradient></defs><path fill="url(#gp-grad)" d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg><span style="background:linear-gradient(110deg,#76b900,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">En İyi 12 Remake Oyunu</span>
+    </h3>
+  </div>
+  <div class="card-table gp-layer gp-card-table-inner" style="--gp-frame:rgba(118,185,0,0.22);overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.5);">
+    <div style="position:relative;z-index:1;">
+  <a class="card-row" href="#resident-evil-2-remake" style="--row-c:#dc2626;display:grid;grid-template-columns:140px 1fr auto;gap:14px;padding:8px 18px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background 0.2s ease;text-decoration:none;color:inherit;">
+    <span class="gp-badge" style="display:inline-block;color:#dc2626;background:rgba(220,38,38,0.1);border:1px solid rgba(220,38,38,0.3);padding:3px 10px;border-radius:4px;font-size:0.62em;font-weight:800;letter-spacing:0.14em;white-space:nowrap;min-width:120px;text-align:center;text-transform:uppercase;">KORKU</span>
+    <div class="gp-name" style="font-weight:600;color:#f3f4f6;font-size:0.98em;letter-spacing:-0.005em;transition:color 0.2s;">Resident Evil 2 Remake</div>
+    <div class="gp-meta" style="color:#8b95a7;font-size:0.78em;text-align:right;white-space:nowrap;font-weight:500;letter-spacing:0.01em;">Capcom · 2019</div>
+  </a>
+  <a class="card-row" href="#resident-evil-4-remake" style="--row-c:#dc2626;display:grid;grid-template-columns:140px 1fr auto;gap:14px;padding:8px 18px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background 0.2s ease;text-decoration:none;color:inherit;">
+    <span class="gp-badge" style="display:inline-block;color:#dc2626;background:rgba(220,38,38,0.1);border:1px solid rgba(220,38,38,0.3);padding:3px 10px;border-radius:4px;font-size:0.62em;font-weight:800;letter-spacing:0.14em;white-space:nowrap;min-width:120px;text-align:center;text-transform:uppercase;">KORKU</span>
+    <div class="gp-name" style="font-weight:600;color:#f3f4f6;font-size:0.98em;letter-spacing:-0.005em;transition:color 0.2s;">Resident Evil 4 Remake</div>
+    <div class="gp-meta" style="color:#8b95a7;font-size:0.78em;text-align:right;white-space:nowrap;font-weight:500;letter-spacing:0.01em;">Capcom · 2023</div>
+  </a>
+  <a class="card-row" href="#dead-space-remake" style="--row-c:#dc2626;display:grid;grid-template-columns:140px 1fr auto;gap:14px;padding:8px 18px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background 0.2s ease;text-decoration:none;color:inherit;">
+    <span class="gp-badge" style="display:inline-block;color:#dc2626;background:rgba(220,38,38,0.1);border:1px solid rgba(220,38,38,0.3);padding:3px 10px;border-radius:4px;font-size:0.62em;font-weight:800;letter-spacing:0.14em;white-space:nowrap;min-width:120px;text-align:center;text-transform:uppercase;">KORKU</span>
+    <div class="gp-name" style="font-weight:600;color:#f3f4f6;font-size:0.98em;letter-spacing:-0.005em;transition:color 0.2s;">Dead Space Remake</div>
+    <div class="gp-meta" style="color:#8b95a7;font-size:0.78em;text-align:right;white-space:nowrap;font-weight:500;letter-spacing:0.01em;">EA Motive · 2023</div>
+  </a>
+  <a class="card-row" href="#silent-hill-2-remake" style="--row-c:#dc2626;display:grid;grid-template-columns:140px 1fr auto;gap:14px;padding:8px 18px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background 0.2s ease;text-decoration:none;color:inherit;">
+    <span class="gp-badge" style="display:inline-block;color:#dc2626;background:rgba(220,38,38,0.1);border:1px solid rgba(220,38,38,0.3);padding:3px 10px;border-radius:4px;font-size:0.62em;font-weight:800;letter-spacing:0.14em;white-space:nowrap;min-width:120px;text-align:center;text-transform:uppercase;">KORKU</span>
+    <div class="gp-name" style="font-weight:600;color:#f3f4f6;font-size:0.98em;letter-spacing:-0.005em;transition:color 0.2s;">Silent Hill 2 Remake</div>
+    <div class="gp-meta" style="color:#8b95a7;font-size:0.78em;text-align:right;white-space:nowrap;font-weight:500;letter-spacing:0.01em;">Bloober Team · 2024</div>
+  </a>
+  <a class="card-row" href="#final-fantasy-vii-remake" style="--row-c:#7c3aed;display:grid;grid-template-columns:140px 1fr auto;gap:14px;padding:8px 18px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background 0.2s ease;text-decoration:none;color:inherit;">
+    <span class="gp-badge" style="display:inline-block;color:#7c3aed;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.3);padding:3px 10px;border-radius:4px;font-size:0.62em;font-weight:800;letter-spacing:0.14em;white-space:nowrap;min-width:120px;text-align:center;text-transform:uppercase;">JRPG</span>
+    <div class="gp-name" style="font-weight:600;color:#f3f4f6;font-size:0.98em;letter-spacing:-0.005em;transition:color 0.2s;">Final Fantasy VII Remake</div>
+    <div class="gp-meta" style="color:#8b95a7;font-size:0.78em;text-align:right;white-space:nowrap;font-weight:500;letter-spacing:0.01em;">Square Enix · 2020</div>
+  </a>
+  <a class="card-row" href="#final-fantasy-vii-rebirth" style="--row-c:#7c3aed;display:grid;grid-template-columns:140px 1fr auto;gap:14px;padding:8px 18px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background 0.2s ease;text-decoration:none;color:inherit;">
+    <span class="gp-badge" style="display:inline-block;color:#7c3aed;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.3);padding:3px 10px;border-radius:4px;font-size:0.62em;font-weight:800;letter-spacing:0.14em;white-space:nowrap;min-width:120px;text-align:center;text-transform:uppercase;">JRPG</span>
+    <div class="gp-name" style="font-weight:600;color:#f3f4f6;font-size:0.98em;letter-spacing:-0.005em;transition:color 0.2s;">Final Fantasy VII Rebirth</div>
+    <div class="gp-meta" style="color:#8b95a7;font-size:0.78em;text-align:right;white-space:nowrap;font-weight:500;letter-spacing:0.01em;">Square Enix · 2024</div>
+  </a>
+  <a class="card-row" href="#demon-s-souls-remake" style="--row-c:#a3a3a3;display:grid;grid-template-columns:140px 1fr auto;gap:14px;padding:8px 18px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background 0.2s ease;text-decoration:none;color:inherit;">
+    <span class="gp-badge" style="display:inline-block;color:#a3a3a3;background:rgba(163,163,163,0.1);border:1px solid rgba(163,163,163,0.3);padding:3px 10px;border-radius:4px;font-size:0.62em;font-weight:800;letter-spacing:0.14em;white-space:nowrap;min-width:120px;text-align:center;text-transform:uppercase;">SOULSLIKE</span>
+    <div class="gp-name" style="font-weight:600;color:#f3f4f6;font-size:0.98em;letter-spacing:-0.005em;transition:color 0.2s;">Demon's Souls Remake</div>
+    <div class="gp-meta" style="color:#8b95a7;font-size:0.78em;text-align:right;white-space:nowrap;font-weight:500;letter-spacing:0.01em;">Bluepoint · 2020</div>
+  </a>
+  <a class="card-row" href="#shadow-of-the-colossus-remake" style="--row-c:#0891b2;display:grid;grid-template-columns:140px 1fr auto;gap:14px;padding:8px 18px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background 0.2s ease;text-decoration:none;color:inherit;">
+    <span class="gp-badge" style="display:inline-block;color:#0891b2;background:rgba(8,145,178,0.1);border:1px solid rgba(8,145,178,0.3);padding:3px 10px;border-radius:4px;font-size:0.62em;font-weight:800;letter-spacing:0.14em;white-space:nowrap;min-width:120px;text-align:center;text-transform:uppercase;">AKSİYON-MACERA</span>
+    <div class="gp-name" style="font-weight:600;color:#f3f4f6;font-size:0.98em;letter-spacing:-0.005em;transition:color 0.2s;">Shadow of the Colossus Remake</div>
+    <div class="gp-meta" style="color:#8b95a7;font-size:0.78em;text-align:right;white-space:nowrap;font-weight:500;letter-spacing:0.01em;">Bluepoint · 2018</div>
+  </a>
+  <a class="card-row" href="#persona-3-reload" style="--row-c:#7c3aed;display:grid;grid-template-columns:140px 1fr auto;gap:14px;padding:8px 18px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background 0.2s ease;text-decoration:none;color:inherit;">
+    <span class="gp-badge" style="display:inline-block;color:#7c3aed;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.3);padding:3px 10px;border-radius:4px;font-size:0.62em;font-weight:800;letter-spacing:0.14em;white-space:nowrap;min-width:120px;text-align:center;text-transform:uppercase;">JRPG</span>
+    <div class="gp-name" style="font-weight:600;color:#f3f4f6;font-size:0.98em;letter-spacing:-0.005em;transition:color 0.2s;">Persona 3 Reload</div>
+    <div class="gp-meta" style="color:#8b95a7;font-size:0.78em;text-align:right;white-space:nowrap;font-weight:500;letter-spacing:0.01em;">Atlus · 2024</div>
+  </a>
+  <a class="card-row" href="#metal-gear-solid-delta-snake-eater" style="--row-c:#16a34a;display:grid;grid-template-columns:140px 1fr auto;gap:14px;padding:8px 18px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background 0.2s ease;text-decoration:none;color:inherit;">
+    <span class="gp-badge" style="display:inline-block;color:#16a34a;background:rgba(22,163,74,0.1);border:1px solid rgba(22,163,74,0.3);padding:3px 10px;border-radius:4px;font-size:0.62em;font-weight:800;letter-spacing:0.14em;white-space:nowrap;min-width:120px;text-align:center;text-transform:uppercase;">GİZLİLİK</span>
+    <div class="gp-name" style="font-weight:600;color:#f3f4f6;font-size:0.98em;letter-spacing:-0.005em;transition:color 0.2s;">Metal Gear Solid Delta: Snake Eater</div>
+    <div class="gp-meta" style="color:#8b95a7;font-size:0.78em;text-align:right;white-space:nowrap;font-weight:500;letter-spacing:0.01em;">Konami · 2025</div>
+  </a>
+  <a class="card-row" href="#the-last-of-us-part-i" style="--row-c:#0891b2;display:grid;grid-template-columns:140px 1fr auto;gap:14px;padding:8px 18px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background 0.2s ease;text-decoration:none;color:inherit;">
+    <span class="gp-badge" style="display:inline-block;color:#0891b2;background:rgba(8,145,178,0.1);border:1px solid rgba(8,145,178,0.3);padding:3px 10px;border-radius:4px;font-size:0.62em;font-weight:800;letter-spacing:0.14em;white-space:nowrap;min-width:120px;text-align:center;text-transform:uppercase;">AKSİYON-MACERA</span>
+    <div class="gp-name" style="font-weight:600;color:#f3f4f6;font-size:0.98em;letter-spacing:-0.005em;transition:color 0.2s;">The Last of Us Part I</div>
+    <div class="gp-meta" style="color:#8b95a7;font-size:0.78em;text-align:right;white-space:nowrap;font-weight:500;letter-spacing:0.01em;">Naughty Dog · 2022</div>
+  </a>
+  <a class="card-row" href="#crash-bandicoot-n-sane-trilogy" style="--row-c:#f59e0b;display:grid;grid-template-columns:140px 1fr auto;gap:14px;padding:8px 18px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background 0.2s ease;text-decoration:none;color:inherit;">
+    <span class="gp-badge" style="display:inline-block;color:#f59e0b;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);padding:3px 10px;border-radius:4px;font-size:0.62em;font-weight:800;letter-spacing:0.14em;white-space:nowrap;min-width:120px;text-align:center;text-transform:uppercase;">PLATFORM</span>
+    <div class="gp-name" style="font-weight:600;color:#f3f4f6;font-size:0.98em;letter-spacing:-0.005em;transition:color 0.2s;">Crash Bandicoot N. Sane Trilogy</div>
+    <div class="gp-meta" style="color:#8b95a7;font-size:0.78em;text-align:right;white-space:nowrap;font-weight:500;letter-spacing:0.01em;">Vicarious Visions · 2017</div>
+  </a>
+    </div>
+  </div>
+</div>
+<h3 id="resident-evil-2-remake" style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:32px 0 14px;font-size:1.18em;line-height:1.4;">
+  <span style="display:inline-block;color:#dc2626;background:rgba(220,38,38,0.1);border:1px solid rgba(220,38,38,0.3);padding:3px 10px;border-radius:4px;font-size:0.5em;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;white-space:nowrap;">KORKU</span>
+  <span style="color:#fff;font-weight:700;letter-spacing:-0.01em;">Resident Evil 2 Remake</span>
+  <span style="font-size:0.52em;color:#8b95a7;font-weight:500;letter-spacing:0.02em;flex-basis:100%;margin-top:-4px;">Capcom · 2019 · RE Engine</span>
+</h3><!-- Responsive YouTube Embed Başlangıcı -->
+<div class="gp-yt-wrap" style="width: 100%; aspect-ratio: 16/9; background: transparent; overflow: hidden; border-radius: 12px; margin: 1em 0;"><iframe style="width: 100%; height: 100%; object-fit: contain; display: block; background: transparent;" title="YouTube video player" src="https://www.youtube.com/embed/u3wS-Q2KBpk" width="560" height="315" frameborder="0" allowfullscreen="allowfullscreen"></iframe></div>
+<!-- Responsive YouTube Embed Sonu --><br><p>Resident Evil 2 Remake, sabit kamera açılarını ve hantal kontrolleri bir kenara bırakarak, klasik survival horror yapısını modern omuz kamerasıyla yeniden kurguluyor. Yoğun atmosferi ve akıcı oynanışıyla, remake denince akla gelen ilk ve en güçlü örnekler arasında yer alıyor.</p><h3 id="resident-evil-4-remake" style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:32px 0 14px;font-size:1.18em;line-height:1.4;">
+  <span style="display:inline-block;color:#dc2626;background:rgba(220,38,38,0.1);border:1px solid rgba(220,38,38,0.3);padding:3px 10px;border-radius:4px;font-size:0.5em;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;white-space:nowrap;">KORKU</span>
+  <span style="color:#fff;font-weight:700;letter-spacing:-0.01em;">Resident Evil 4 Remake</span>
+  <span style="font-size:0.52em;color:#8b95a7;font-weight:500;letter-spacing:0.02em;flex-basis:100%;margin-top:-4px;">Capcom · 2023 · RE Engine</span>
+</h3><!-- Responsive YouTube Embed Başlangıcı -->
+<div class="gp-yt-wrap" style="width: 100%; aspect-ratio: 16/9; background: transparent; overflow: hidden; border-radius: 12px; margin: 1em 0;"><iframe style="width: 100%; height: 100%; object-fit: contain; display: block; background: transparent;" title="YouTube video player" src="https://www.youtube.com/embed/j5Xv2lM9wes" width="560" height="315" frameborder="0" allowfullscreen="allowfullscreen"></iframe></div>
+<!-- Responsive YouTube Embed Sonu --><br><p>Resident Evil 4 Remake, orjinal oyunun ikonik aksiyon-korku dengesini bozmadan atmosferi, bölüm temposunu ve karakter anlatımını kusursuzca modernize ediyor. Hem nostalji tutkunlarını hem de güncel aksiyon arayan oyuncuları aynı noktada buluşturmayı ustalıkla başarıyor.</p><h3 id="dead-space-remake" style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:32px 0 14px;font-size:1.18em;line-height:1.4;">
+  <span style="display:inline-block;color:#dc2626;background:rgba(220,38,38,0.1);border:1px solid rgba(220,38,38,0.3);padding:3px 10px;border-radius:4px;font-size:0.5em;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;white-space:nowrap;">KORKU</span>
+  <span style="color:#fff;font-weight:700;letter-spacing:-0.01em;">Dead Space Remake</span>
+  <span style="font-size:0.52em;color:#8b95a7;font-weight:500;letter-spacing:0.02em;flex-basis:100%;margin-top:-4px;">EA Motive · 2023 · Frostbite</span>
+</h3><!-- Responsive YouTube Embed Başlangıcı -->
+<div class="gp-yt-wrap" style="width: 100%; aspect-ratio: 16/9; background: transparent; overflow: hidden; border-radius: 12px; margin: 1em 0;"><iframe style="width: 100%; height: 100%; object-fit: contain; display: block; background: transparent;" title="YouTube video player" src="https://www.youtube.com/embed/C1yiuM7blIw" width="560" height="315" frameborder="0" allowfullscreen="allowfullscreen"></iframe></div>
+<!-- Responsive YouTube Embed Sonu --><br><p>Dead Space Remake, USG Ishimura’nın o meşhur klostrofobik korku havasını, yeni nesil grafikler ve etkileyici ses tasarımıyla tekrar inşa ediyor. Teknik kalitesi ve geren atmosferiyle, korku türündeki en başarılı yeniden yapımlardan biri olarak öne çıkıyor.</p><h3 id="silent-hill-2-remake" style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:32px 0 14px;font-size:1.18em;line-height:1.4;">
+  <span style="display:inline-block;color:#dc2626;background:rgba(220,38,38,0.1);border:1px solid rgba(220,38,38,0.3);padding:3px 10px;border-radius:4px;font-size:0.5em;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;white-space:nowrap;">KORKU</span>
+  <span style="color:#fff;font-weight:700;letter-spacing:-0.01em;">Silent Hill 2 Remake</span>
+  <span style="font-size:0.52em;color:#8b95a7;font-weight:500;letter-spacing:0.02em;flex-basis:100%;margin-top:-4px;">Bloober Team · 2024 · Unreal Engine 5</span>
+</h3><!-- Responsive YouTube Embed Başlangıcı -->
+<div class="gp-yt-wrap" style="width: 100%; aspect-ratio: 16/9; background: transparent; overflow: hidden; border-radius: 12px; margin: 1em 0;"><iframe style="width: 100%; height: 100%; object-fit: contain; display: block; background: transparent;" title="YouTube video player" src="https://www.youtube.com/embed/-fsQjJmYx6U" width="560" height="315" frameborder="0" allowfullscreen="allowfullscreen"></iframe></div>
+<!-- Responsive YouTube Embed Sonu --><br><p>Silent Hill 2 Remake, efsanevi psikolojik korku mirasını, modern kamera açıları ve güncel oynanış mekanikleriyle tekrar ele alıyor. Oyunun o tekinsiz atmosferini, karakter psikolojisini ve derin gerilimini adeta iliklerine kadar hissettiriyor.</p><h3 id="final-fantasy-vii-remake" style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:32px 0 14px;font-size:1.18em;line-height:1.4;">
+  <span style="display:inline-block;color:#7c3aed;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.3);padding:3px 10px;border-radius:4px;font-size:0.5em;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;white-space:nowrap;">JRPG</span>
+  <span style="color:#fff;font-weight:700;letter-spacing:-0.01em;">Final Fantasy VII Remake</span>
+  <span style="font-size:0.52em;color:#8b95a7;font-weight:500;letter-spacing:0.02em;flex-basis:100%;margin-top:-4px;">Square Enix · 2020 · Unreal Engine 4</span>
+</h3><!-- Responsive YouTube Embed Başlangıcı -->
+<div class="gp-yt-wrap" style="width: 100%; aspect-ratio: 16/9; background: transparent; overflow: hidden; border-radius: 12px; margin: 1em 0;"><iframe style="width: 100%; height: 100%; object-fit: contain; display: block; background: transparent;" title="YouTube video player" src="https://www.youtube.com/embed/eHdaWMP7D2s" width="560" height="315" frameborder="0" allowfullscreen="allowfullscreen"></iframe></div>
+<!-- Responsive YouTube Embed Sonu --><br><p>Final Fantasy VII Remake, klasik JRPG yapısını, gerçek zamanlı aksiyon ve sinematik bir anlatımla harmanlayarak bambaşka bir boyuta taşıyor. Sadece bir remake olmakla kalmıyor, hikayeyi cesur bir şekilde genişleterek oyuncuyu şaşırtmaya devam ediyor.</p><h3 id="final-fantasy-vii-rebirth" style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:32px 0 14px;font-size:1.18em;line-height:1.4;">
+  <span style="display:inline-block;color:#7c3aed;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.3);padding:3px 10px;border-radius:4px;font-size:0.5em;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;white-space:nowrap;">JRPG</span>
+  <span style="color:#fff;font-weight:700;letter-spacing:-0.01em;">Final Fantasy VII Rebirth</span>
+  <span style="font-size:0.52em;color:#8b95a7;font-weight:500;letter-spacing:0.02em;flex-basis:100%;margin-top:-4px;">Square Enix · 2024 · Unreal Engine 4</span>
+</h3><!-- Responsive YouTube Embed Başlangıcı -->
+<div class="gp-yt-wrap" style="width: 100%; aspect-ratio: 16/9; background: transparent; overflow: hidden; border-radius: 12px; margin: 1em 0;"><iframe style="width: 100%; height: 100%; object-fit: contain; display: block; background: transparent;" title="YouTube video player" src="https://www.youtube.com/embed/HkD8BCCYsS0" width="560" height="315" frameborder="0" allowfullscreen="allowfullscreen"></iframe></div>
+<!-- Responsive YouTube Embed Sonu --><br><p>Final Fantasy VII Rebirth, <a href="https://gameplus.com.tr/blog/final-fantasy-serisi-final-fantasy-oyunlari-siralamasi-ve-karakterleri">Final Fantasy serisi</a> dünyasına çok daha geniş bir açık dünya ve derinleşen karakter hikayeleri ekliyor. Hem oyuncuların hem de eleştirmenlerin favorisi olan bu oyun, bir efsanenin modern çağa nasıl devasa bir şekilde taşınacağını herkese gösteriyor.</p><h3 id="demon-s-souls-remake" style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:32px 0 14px;font-size:1.18em;line-height:1.4;">
+  <span style="display:inline-block;color:#a3a3a3;background:rgba(163,163,163,0.1);border:1px solid rgba(163,163,163,0.3);padding:3px 10px;border-radius:4px;font-size:0.5em;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;white-space:nowrap;">SOULSLIKE</span>
+  <span style="color:#fff;font-weight:700;letter-spacing:-0.01em;">Demon's Souls Remake</span>
+  <span style="font-size:0.52em;color:#8b95a7;font-weight:500;letter-spacing:0.02em;flex-basis:100%;margin-top:-4px;">Bluepoint Games · 2020 · Proprietary</span>
+</h3><!-- Responsive YouTube Embed Başlangıcı -->
+<div class="gp-yt-wrap" style="width: 100%; aspect-ratio: 16/9; background: transparent; overflow: hidden; border-radius: 12px; margin: 1em 0;"><iframe style="width: 100%; height: 100%; object-fit: contain; display: block; background: transparent;" title="YouTube video player" src="https://www.youtube.com/embed/JZF8rGAGuFQ" width="560" height="315" frameborder="0" allowfullscreen="allowfullscreen"></iframe></div>
+<!-- Responsive YouTube Embed Sonu --><br><p>Demon’s Souls Remake, FromSoftware’in başlattığı Souls mirasını, PS5 döneminin gücüyle teknik bir şölene dönüştürüyor. Görsel kalite ve atmosfer tamamen yenilenirken türün imzası olan o zorluk hissini ve epik savaşları başarıyla koruyor.</p><h3 id="shadow-of-the-colossus-remake" style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:32px 0 14px;font-size:1.18em;line-height:1.4;">
+  <span style="display:inline-block;color:#0891b2;background:rgba(8,145,178,0.1);border:1px solid rgba(8,145,178,0.3);padding:3px 10px;border-radius:4px;font-size:0.5em;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;white-space:nowrap;">AKSİYON-MACERA</span>
+  <span style="color:#fff;font-weight:700;letter-spacing:-0.01em;">Shadow of the Colossus Remake</span>
+  <span style="font-size:0.52em;color:#8b95a7;font-weight:500;letter-spacing:0.02em;flex-basis:100%;margin-top:-4px;">Bluepoint Games · 2018 · Proprietary</span>
+</h3><!-- Responsive YouTube Embed Başlangıcı -->
+<div class="gp-yt-wrap" style="width: 100%; aspect-ratio: 16/9; background: transparent; overflow: hidden; border-radius: 12px; margin: 1em 0;"><iframe style="width: 100%; height: 100%; object-fit: contain; display: block; background: transparent;" title="YouTube video player" src="https://www.youtube.com/embed/pdZQ98mWeto" width="560" height="315" frameborder="0" allowfullscreen="allowfullscreen"></iframe></div>
+<!-- Responsive YouTube Embed Sonu --><br><p>Shadow of the Colossus Remake, minimalist anlatımı ve o devasa boss savaşlarını, modern görsellerin ihtişamıyla tekrar karşımıza çıkarıyor. Oyunun o kendine has sessiz ve melankolik atmosferini koruması, bu remake projesinin en büyük başarısı sayılıyor.</p><h3 id="persona-3-reload" style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:32px 0 14px;font-size:1.18em;line-height:1.4;">
+  <span style="display:inline-block;color:#7c3aed;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.3);padding:3px 10px;border-radius:4px;font-size:0.5em;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;white-space:nowrap;">JRPG</span>
+  <span style="color:#fff;font-weight:700;letter-spacing:-0.01em;">Persona 3 Reload</span>
+  <span style="font-size:0.52em;color:#8b95a7;font-weight:500;letter-spacing:0.02em;flex-basis:100%;margin-top:-4px;">Atlus · 2024 · Unreal Engine 4</span>
+</h3><!-- Responsive YouTube Embed Başlangıcı -->
+<div class="gp-yt-wrap" style="width: 100%; aspect-ratio: 16/9; background: transparent; overflow: hidden; border-radius: 12px; margin: 1em 0;"><iframe style="width: 100%; height: 100%; object-fit: contain; display: block; background: transparent;" title="YouTube video player" src="https://www.youtube.com/embed/QIIPXA2A6cM" width="560" height="315" frameborder="0" allowfullscreen="allowfullscreen"></iframe></div>
+<!-- Responsive YouTube Embed Sonu --><br><p>Persona 3 Reload, klasik Persona 3 deneyimini; modern bir arayüz, görsel yenilikler ve çok daha akıcı bir savaş sistemiyle güncelliyor. JRPG türü içinde, bir klasiğin günümüze nasıl adapte edileceğine dair harika bir örnek oluşturuyor.</p><h3 id="metal-gear-solid-delta-snake-eater" style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:32px 0 14px;font-size:1.18em;line-height:1.4;">
+  <span style="display:inline-block;color:#16a34a;background:rgba(22,163,74,0.1);border:1px solid rgba(22,163,74,0.3);padding:3px 10px;border-radius:4px;font-size:0.5em;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;white-space:nowrap;">GİZLİLİK</span>
+  <span style="color:#fff;font-weight:700;letter-spacing:-0.01em;">Metal Gear Solid Delta: Snake Eater</span>
+  <span style="font-size:0.52em;color:#8b95a7;font-weight:500;letter-spacing:0.02em;flex-basis:100%;margin-top:-4px;">Konami · 2025 · Unreal Engine 5</span>
+</h3><!-- Responsive YouTube Embed Başlangıcı -->
+<div class="gp-yt-wrap" style="width: 100%; aspect-ratio: 16/9; background: transparent; overflow: hidden; border-radius: 12px; margin: 1em 0;"><iframe style="width: 100%; height: 100%; object-fit: contain; display: block; background: transparent;" title="YouTube video player" src="https://www.youtube.com/embed/ajh3YHJ6baI" width="560" height="315" frameborder="0" allowfullscreen="allowfullscreen"></iframe></div>
+<!-- Responsive YouTube Embed Sonu --><br><p>Efsanevi Snake Eater macerası, modern teknolojiyle yeniden hayat bularak 2025 yılında oyuncularla buluştu. Ormandaki hayatta kalma mücadelesini ve gizlilik mekaniklerini güncel grafiklerle sunarak serinin ruhunu yeni nesle başarıyla taşıyor.</p><h3 id="the-last-of-us-part-i" style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:32px 0 14px;font-size:1.18em;line-height:1.4;">
+  <span style="display:inline-block;color:#0891b2;background:rgba(8,145,178,0.1);border:1px solid rgba(8,145,178,0.3);padding:3px 10px;border-radius:4px;font-size:0.5em;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;white-space:nowrap;">AKSİYON-MACERA</span>
+  <span style="color:#fff;font-weight:700;letter-spacing:-0.01em;">The Last of Us Part I</span>
+  <span style="font-size:0.52em;color:#8b95a7;font-weight:500;letter-spacing:0.02em;flex-basis:100%;margin-top:-4px;">Naughty Dog · 2022 · Proprietary</span>
+</h3><!-- Responsive YouTube Embed Başlangıcı -->
+<div class="gp-yt-wrap" style="width: 100%; aspect-ratio: 16/9; background: transparent; overflow: hidden; border-radius: 12px; margin: 1em 0;"><iframe style="width: 100%; height: 100%; object-fit: contain; display: block; background: transparent;" title="YouTube video player" src="https://www.youtube.com/embed/usjYrOaIsAs" width="560" height="315" frameborder="0" allowfullscreen="allowfullscreen"></iframe></div>
+<!-- Responsive YouTube Embed Sonu --><br><p>The Last of Us Part I, orijinal hikayeyi; yeni nesil görseller, geliştirilmiş animasyonlar ve geniş erişilebilirlik seçenekleriyle tekrar inşa ediyor. Teknik açıdan tamamen yenilenmiş bu sürüm, Ellie ve Joel’un yolculuğunu her zamankinden daha çarpıcı kılıyor.</p><h3 id="crash-bandicoot-n-sane-trilogy" style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:32px 0 14px;font-size:1.18em;line-height:1.4;">
+  <span style="display:inline-block;color:#f59e0b;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);padding:3px 10px;border-radius:4px;font-size:0.5em;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;white-space:nowrap;">PLATFORM</span>
+  <span style="color:#fff;font-weight:700;letter-spacing:-0.01em;">Crash Bandicoot N. Sane Trilogy</span>
+  <span style="font-size:0.52em;color:#8b95a7;font-weight:500;letter-spacing:0.02em;flex-basis:100%;margin-top:-4px;">Vicarious Visions · 2017 · Alchemy</span>
+</h3><!-- Responsive YouTube Embed Başlangıcı -->
+<div class="gp-yt-wrap" style="width: 100%; aspect-ratio: 16/9; background: transparent; overflow: hidden; border-radius: 12px; margin: 1em 0;"><iframe style="width: 100%; height: 100%; object-fit: contain; display: block; background: transparent;" title="YouTube video player" src="https://www.youtube.com/embed/4fbO2-egZ3U" width="560" height="315" frameborder="0" allowfullscreen="allowfullscreen"></iframe></div>
+<!-- Responsive YouTube Embed Sonu --><br><p>Crash Bandicoot N. Sane Trilogy, klasik Crash Bandicoot oyunlarını modern grafiklerle süsleyerek platform türünün neşesini geri getiriyor. Nostaljik hissettirdiği kadar hala oynanabilir kalmayı başaran bu koleksiyon, renkli dünyasıyla her yaştan oyuncuyu eğlendiriyor.</p><p>İşte modern teknolojinin gücüyle baştan aşağı yenilenen ve mutlaka deneyimlenmesi gereken en iyi remake oyunlar:</p><h2 id="radarimizdaki-remake-oyunlar-god-of-war-ve-daha-fazlasi">Radarımızdaki Remake Oyunlar: God of War ve Daha Fazlası</h2><p>Eski efsanelerle hasret giderdik ama ufukta bekleyen ve heyecanımızı artıran daha pek çok yapım var:</p>
+<div class="table-wrap gp-layer" style="--gp-frame:rgba(118,185,0,0.22);margin:22px 0;box-shadow:0 4px 18px rgba(0,0,0,0.5);overflow:hidden;">
+  <div style="overflow-x:auto;position:relative;z-index:1;">
+    <table style="width:100%;border-collapse:collapse;background:transparent;">
+      <thead><tr><th style="padding:12px 18px;text-align:left;border-bottom:1px solid rgba(118,185,0,0.18);font-weight:800;background:transparent;color:#76b900;font-size:0.65em;letter-spacing:0.16em;text-transform:uppercase;">Oyun</th><th style="padding:12px 18px;text-align:left;border-bottom:1px solid rgba(118,185,0,0.18);font-weight:800;background:transparent;color:#76b900;font-size:0.65em;letter-spacing:0.16em;text-transform:uppercase;">Stüdyo</th><th style="padding:12px 18px;text-align:left;border-bottom:1px solid rgba(118,185,0,0.18);font-weight:800;background:transparent;color:#76b900;font-size:0.65em;letter-spacing:0.16em;text-transform:uppercase;">Çıkış Durumu</th></tr></thead>
+      <tbody>
+<tr><td style="padding:11px 18px;vertical-align:top;border-bottom:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.015);color:#cbd5e1;line-height:1.5;font-size:0.92em;"><strong>Assassin's Creed Black Flag Resynced</strong></td><td style="padding:11px 18px;vertical-align:top;border-bottom:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.015);color:#cbd5e1;line-height:1.5;font-size:0.92em;">Ubisoft</td><td style="padding:11px 18px;vertical-align:top;border-bottom:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.015);color:#cbd5e1;line-height:1.5;font-size:0.92em;">9 Temmuz 2026</td></tr>
+<tr><td style="padding:11px 18px;vertical-align:top;border-bottom:1px solid rgba(255,255,255,0.04);color:#cbd5e1;line-height:1.5;font-size:0.92em;"><strong>God of War Greek Trilogy Remake</strong></td><td style="padding:11px 18px;vertical-align:top;border-bottom:1px solid rgba(255,255,255,0.04);color:#cbd5e1;line-height:1.5;font-size:0.92em;">PlayStation Studios</td><td style="padding:11px 18px;vertical-align:top;border-bottom:1px solid rgba(255,255,255,0.04);color:#cbd5e1;line-height:1.5;font-size:0.92em;">Erken geliştirme</td></tr>
+<tr><td style="padding:11px 18px;vertical-align:top;border-bottom:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.015);color:#cbd5e1;line-height:1.5;font-size:0.92em;"><strong>Max Payne 1 &amp; 2 Remake</strong></td><td style="padding:11px 18px;vertical-align:top;border-bottom:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.015);color:#cbd5e1;line-height:1.5;font-size:0.92em;">Remedy + Rockstar</td><td style="padding:11px 18px;vertical-align:top;border-bottom:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.015);color:#cbd5e1;line-height:1.5;font-size:0.92em;">Resmi tarih yok</td></tr>
+<tr><td style="padding:11px 18px;vertical-align:top;border-bottom:1px solid rgba(255,255,255,0.04);color:#cbd5e1;line-height:1.5;font-size:0.92em;"><strong>Splinter Cell Remake</strong></td><td style="padding:11px 18px;vertical-align:top;border-bottom:1px solid rgba(255,255,255,0.04);color:#cbd5e1;line-height:1.5;font-size:0.92em;">Ubisoft Toronto</td><td style="padding:11px 18px;vertical-align:top;border-bottom:1px solid rgba(255,255,255,0.04);color:#cbd5e1;line-height:1.5;font-size:0.92em;">Geliştirme aşaması</td></tr>
+<tr><td style="padding:11px 18px;vertical-align:top;background:rgba(255,255,255,0.015);color:#cbd5e1;line-height:1.5;font-size:0.92em;"><strong>Prince of Persia: The Sands of Time Remake</strong></td><td style="padding:11px 18px;vertical-align:top;background:rgba(255,255,255,0.015);color:#cbd5e1;line-height:1.5;font-size:0.92em;">Ubisoft</td><td style="padding:11px 18px;vertical-align:top;background:rgba(255,255,255,0.015);color:#cbd5e1;line-height:1.5;font-size:0.92em;">Durduruldu (30 Ocak 2026)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<h3 id="assassin-s-creed-black-flag-resynced">Assassin’s Creed Black Flag Resynced</h3><p>9 Temmuz 2026 tarihinde PS5, Xbox Series X|S ve PC platformları için çıkacağı kesinleşen Assassin’s Creed Black Flag Resynced, Anvil Engine güncellemesiyle görsel bir şölen vadediyor. Ray tracing desteği, Dolby Atmos ses kalitesi ve eklenen yeni hikaye bölümleriyle Edward Kenway’in maceralarına çok daha derin bir dalış yapmaya hazırlanıyoruz.</p><h3 id="god-of-war-greek-trilogy-remake">God of War Greek Trilogy Remake</h3><p>PlayStation Blog üzerinden gelen resmi açıklama, orijinal God of War üçlemesinin modern standartlarda yeniden geliştirildiğini doğruluyor. Ancak projenin henüz çok erken bir geliştirme aşamasında olduğu ve yeni detayların paylaşılmasının uzun zaman alacağı belirtiliyor.</p>
+<div class="editor-note gp-layer" style="--gp-frame:rgba(59,130,246,0.22);margin:22px 0;padding:14px 18px;box-shadow:0 2px 12px rgba(0,0,0,0.4);">
+  <div style="position:relative;z-index:1;">
+    <div style="display:flex;align-items:center;font-weight:800;margin-bottom:6px;color:#93c5fd;font-size:0.72em;letter-spacing:0.12em;text-transform:uppercase;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px;margin-right:8px;flex-shrink:0;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>Game+ Editör Notu</div>
+    <p style="margin:0;color:#cbd5e1;line-height:1.55;font-size:0.94em;">PlayStation Studios'un God of War Greek Trilogy duyurusu PlayStation Blog'da kısa bir paragraf olarak geçti. Geliştirme PS3 dönemi orijinallerini PS5 standartlarına taşıyor; resmi tarih paylaşılana kadar projeler erken aşama kabul edilmeli.</p>
+  </div>
+</div>
+<h3 id="max-payne-1-amp-2-remake">Max Payne 1 &amp; 2 Remake</h3><p>Remedy ve Rockstar Games güçlerini birleştirerek oyun tarihinin en ikonik dedektifi Max Payne’i geri getiriyor. PC, PS5 ve Xbox Series X|S için geliştirilen yapım hakkında henüz resmi bir çıkış yılı paylaşılmadı.</p><h3 id="splinter-cell-remake">Splinter Cell Remake</h3><p>Sam Fisher gölgelerin arasından tekrar süzülmeye hazırlanıyor. Ubisoft Toronto, orijinal oyunun o meşhur ruhunu koruyarak yapımı Snowdrop motoruyla baştan inşa ediyor. Modern gizlilik mekanikleriyle donatılacak olan proje şuan hala geliştirme aşamasında.</p><h3 id="prince-of-persia-the-sands-of-time-remake">Prince of Persia: The Sands of Time Remake</h3><p>Önceki sızıntılarda 2026 yılı hedef olarak gösterilse de Ubisoft’un 30 Ocak 2026 tarihli <a href="https://www.ubisoft.com/en-us/game/prince-of-persia/news-updates/2qSTvlPR0AfWq0dSVTgKm0/official-statement" target="_blank" rel="nofollow noopener">resmi açıklamasıyla</a> Prince of Persia: The Sands of Time Remake’in geliştirilme süreci ne yazık ki durduruldu. Bu gelişme, projeyi aktif olarak en çok beklenenler listesinden şimdilik uzaklaştırdı.</p><h3 id="diger-beklenen-ve-konusulan-remake-ler">Diğer Beklenen ve Konuşulan Remake’ler</h3><p>Henüz resmi bir onay almasa da oyun dünyasının kulislerinde Resident Evil 5 Remake veya yeni bir Dino Crisis gibi projeler sıkça konuşuluyor. Ancak bu başlıklar şu an için sadece birer beklenti ve söylenti seviyesinde kalıyor.</p><div class="highlight-box gp-layer" style="--gp-frame:rgba(245,158,11,0.22);margin:22px 0;padding:14px 18px;box-shadow:0 2px 12px rgba(0,0,0,0.4);">
+  <div style="position:relative;z-index:1;">
+    <div style="display:flex;align-items:center;font-weight:800;margin-bottom:6px;color:#fbbf24;font-size:0.72em;letter-spacing:0.12em;text-transform:uppercase;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px;margin-right:8px;flex-shrink:0;"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14a5 5 0 1 0-6.18 0c.66.49 1.09 1.27 1.09 2.1V17h4v-.9c0-.83.43-1.61 1.09-2.1z"/></svg>Hatırlatma</div>
+    <p style="margin:0;color:#fde68a;line-height:1.55;font-size:0.94em;">GeForce NOW üzerinden bir remake oynamak için o yapımın Steam, Epic Games, Xbox veya ilgili platformdaki lisansına sahip olman gerekiyor. Bulut sadece çalıştırır, oyun satmaz.</p>
+  </div>
+</div>
+<p>Yeni nesil grafikler her sistemle dost olmayabilir ama <a href="https://gameplus.com.tr/gfn">GeForce Now</a> sayesinde donanım gücünü dert etmene gerek kalmıyor! En güncel<a href="https://gameplus.com.tr/gfn/oyunlar"> GeForce Now oyunlar</a> listesindeki pek çok oyunu, bulut teknolojisiyle doğrudan ekranına taşıyabilir, avantajlı <a href="https://gameplus.com.tr/gfn/paketler">GeForce Now fiyat</a> seçenekleriyle bu kütüphaneye her yerden erişebilirsin. Ancak unutma, GeForce Now üzerinden desteklenen yapımları oynaman için o oyunlara halihazırda sahip olman gerekiyor.</p><h2 id="remake-oyun-secerken-nelere-dikkat-edilmeli">Remake Oyun Seçerken Nelere Dikkat Edilmeli?</h2><p>İyi bir remake oyun, nostaljiyi korurken modern oyuncunun beklentilerini de kusursuz bir şekilde karşılamayı hedefler. Eğer bir remake oyununu kütüphanene eklemeyi düşünüyorsan, şu kritik noktalara mutlaka göz atmanı öneriyoruz:</p><ul><li><p>Orijinal oyunun o meşhur atmosferini ve ruhunu korumayı başarıyor mu?</p></li><li><p>Kontroller günümüz standartlarına uygun şekilde modernize edilmiş mi?</p></li><li><p>Kamera açıları ve kullanıcı arayüzü bugünün teknolojisine ayak uyduruyor mu?</p></li><li><p>Hikayeye eklenen yeni sahneler veya içerikler oyunun özünü bozuyor mu?</p></li><li><p>Yeni nesil oyuncular için erişilebilir bir yapı sunuyor mu?</p></li><li><p>Eski oyunculara o tanıdık nostalji hissini hala hissettiriyor mu?</p></li><li><p>Teknik tarafta performans ve optimizasyon sorunlarından arınmış mı?</p></li></ul><br><p>Remake oyunlar, oyun tarihinin en önemli yapımlarını yeni nesil oyuncular için erişilebilir hale getirirken, eski oyunculara da o çok sevdikleri dünyalara yepyeni bir gözle dönme şansı veriyor. Korku tutkunları için Resident Evil, Silent Hill ve Dead Space gerilimi zirveye taşırken; <a href="https://gameplus.com.tr/gfn/oyunlar/macera">macera oyunları</a> arayanlar  için God of War ve Assassin’s Creed Black Flag Resynced harika seçenekler oluşturuyor. Eğer noir bir shooter deneyimi istiyorsan Max Payne, gölgelerin gücünü kullanmayı seviyorsan Splinter Cell, derin bir hikaye ve JRPG dünyası arıyorsan Final Fantasy VII serisi ile Persona 3 Reload tam sana göre duruyor.</p><div class="cta-end gp-conic" style="--gp-glow:#76b900;margin:40px 0 24px;box-shadow:0 6px 28px rgba(0,0,0,0.6);">
+<div class="gp-conic-inner gp-layer" style="--gp-frame:rgba(118,185,0,0.22);padding:28px 30px;">
+  <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap;position:relative;z-index:1;">
+    <div style="font-size:1.15em;font-weight:800;color:#fff;letter-spacing:-0.015em;">
+      GeForce <span style="color:#76b900;">NOW</span>
+    </div>
+    <div style="height:18px;width:1px;background:#2a2a2a;"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <span style="color:#76b900;font-weight:700;font-size:0.66em;padding:4px 10px;border:1px solid #76b900;border-radius:4px;letter-spacing:0.12em;text-transform:uppercase;">Paketler</span>
+      <span style="color:#f59e0b;font-weight:700;font-size:0.66em;padding:4px 10px;border:1px solid #f59e0b;border-radius:4px;letter-spacing:0.12em;text-transform:uppercase;">Fırsatlar</span>
+    </div>
+  </div>
+  <div style="font-size:1.32em;font-weight:800;margin-bottom:8px;line-height:1.3;color:#fff;letter-spacing:-0.015em;position:relative;z-index:1;">Efsane oyunları bulutta yeniden yaşa!</div>
+  <p style="color:#cbd5e1;margin:0 0 18px 0;line-height:1.55;font-size:0.93em;position:relative;z-index:1;">Performance veya Ultimate paketle kütüphanendeki GeForce NOW destekli remake yapımlarını saniyeler içinde başlatabilirsin. Fırsatlar sayfasından da güncel indirim ve kampanyalardan haberdar olabilirsin.</p>
+  <div style="display:flex;flex-wrap:wrap;gap:10px;position:relative;z-index:1;">
+    <a href="https://gameplus.com.tr/gfn/paketler" style="display:inline-flex;align-items:center;background:#76b900;color:#fff;padding:11px 22px;border-radius:6px;font-weight:700;text-decoration:none;font-size:0.93em;box-shadow:0 2px 8px rgba(118,185,0,0.35);letter-spacing:-0.005em;">GeForce NOW Paketleri<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-left:6px;flex-shrink:0;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+    <a href="https://gameplus.com.tr/firsatlar" style="display:inline-flex;align-items:center;background:transparent;color:#fff;padding:10px 21px;border-radius:6px;font-weight:700;text-decoration:none;font-size:0.93em;border:1px solid #f59e0b;letter-spacing:-0.005em;">Güncel Fırsatlar<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-left:6px;flex-shrink:0;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+  </div>
+</div>
+</div>
+<h2 id="sikca-sorulan-sorular">Sıkça Sorulan Sorular</h2><div class="faq-block" style="margin:24px 0;">
+  <details class="faq-item" style="margin-bottom:10px;border:1px solid #1f1f1f;border-radius:10px;overflow:hidden;background:transparent;box-shadow:0 2px 8px rgba(0,0,0,0.4);">
+    <summary style="display:flex;align-items:center;gap:14px;padding:16px 20px;cursor:pointer;background:transparent;font-weight:700;color:#f3f4f6;letter-spacing:-0.005em;list-style:none;">
+      <span class="faq-icon" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;flex-shrink:0;color:#fbbf24;font-size:1.5em;font-weight:300;line-height:1;">+</span>
+      <span style="flex:1;">Remake ve Remastered Oyunların Farkı Nedir?</span>
+    </summary>
+    <div style="padding:14px 20px 18px 56px;border-top:1px solid #1f1f1f;background:transparent;"><p style="margin:0;color:#cbd5e1;line-height:1.55;font-size:0.94em;">Remastered, mevcut oyunun kod yapısını değiştirmeden sadece çözünürlük, doku kalitesi ve FPS gibi görsel unsurların iyileştirilmesidir. Remake ise oyunun yeni bir motorla, tüm mekanik ve teknik altyapısının sıfırdan inşa edilmesidir.</p></div>
+  </details>
+  <details class="faq-item" style="margin-bottom:10px;border:1px solid #1f1f1f;border-radius:10px;overflow:hidden;background:transparent;box-shadow:0 2px 8px rgba(0,0,0,0.4);">
+    <summary style="display:flex;align-items:center;gap:14px;padding:16px 20px;cursor:pointer;background:transparent;font-weight:700;color:#f3f4f6;letter-spacing:-0.005em;list-style:none;">
+      <span class="faq-icon" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;flex-shrink:0;color:#fbbf24;font-size:1.5em;font-weight:300;line-height:1;">+</span>
+      <span style="flex:1;">Remake Oyun Ne Demek?</span>
+    </summary>
+    <div style="padding:14px 20px 18px 56px;border-top:1px solid #1f1f1f;background:transparent;"><p style="margin:0;color:#cbd5e1;line-height:1.55;font-size:0.94em;">Remake; eski bir yapımın güncel teknolojiler, modern oynanış dinamikleri ve yeni nesil grafik standartları baz alınarak baştan aşağıya yeniden üretilmiş halidir.</p></div>
+  </details>
+  <details class="faq-item" style="margin-bottom:10px;border:1px solid #1f1f1f;border-radius:10px;overflow:hidden;background:transparent;box-shadow:0 2px 8px rgba(0,0,0,0.4);">
+    <summary style="display:flex;align-items:center;gap:14px;padding:16px 20px;cursor:pointer;background:transparent;font-weight:700;color:#f3f4f6;letter-spacing:-0.005em;list-style:none;">
+      <span class="faq-icon" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;flex-shrink:0;color:#fbbf24;font-size:1.5em;font-weight:300;line-height:1;">+</span>
+      <span style="flex:1;">Oyunda Remake Nasıl Yapılır?</span>
+    </summary>
+    <div style="padding:14px 20px 18px 56px;border-top:1px solid #1f1f1f;background:transparent;"><p style="margin:0;color:#cbd5e1;line-height:1.55;font-size:0.94em;">Orijinal oyunun ruhu temel alınarak; yeni bir oyun motoru üzerinde karakter modelleri, çevre tasarımları, yapay zeka ve kontrol sistemleri güncel standartlara göre sıfırdan tasarlanır. Gerekli görüldüğü durumlarda hikaye akışına yeni sahneler ve modernleştirilmiş mekanikler eklenir.</p></div>
+  </details>
+</div>
+</body>
+</html>
