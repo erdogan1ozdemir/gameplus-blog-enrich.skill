@@ -384,7 +384,7 @@ def render_ubisoft_cta(headline, desc):
 # --- Comparison Table (premium dark, refined borders) ---
 def render_table(headers, rows):
     """V9 layered frame — soft outer color border + faint inner stroke, zebra striping."""
-    th = "".join(f'<th style="padding:12px 18px;text-align:left;border-bottom:1px solid rgba(118,185,0,0.18);font-weight:800;background:transparent;color:#76b900;font-size:0.65em;letter-spacing:0.16em;text-transform:uppercase;">{h}</th>' for h in headers)
+    th = "".join(f'<th style="padding:14px 18px;text-align:left;border-bottom:1px solid rgba(118,185,0,0.18);font-weight:800;background:transparent;color:#76b900;font-size:0.98em;letter-spacing:0.06em;text-transform:uppercase;">{h}</th>' for h in headers)
     body_rows = []
     for i, row in enumerate(rows):
         is_last = (i == len(rows) - 1)
