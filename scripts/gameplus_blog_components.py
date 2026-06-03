@@ -200,7 +200,7 @@ ANIMATED_BORDER_STYLE = '''<style>
 @media (max-width: 700px) {
   /* --- Karşılaştırma tablosu: yatay kaydırma yok, tüm sütunlar görünür, okunur punto --- */
   .table-wrap > div { overflow-x: visible !important; }
-  .table-wrap table { font-size: 0.62em !important; table-layout: fixed; width: 100% !important; }
+  .table-wrap table { font-size: 0.76em !important; table-layout: fixed; width: 100% !important; }
   .table-wrap th, .table-wrap td {
     padding: 8px 7px !important; white-space: normal !important;
     word-break: break-word; overflow-wrap: anywhere; vertical-align: top; line-height: 1.4 !important;
@@ -213,22 +213,22 @@ ANIMATED_BORDER_STYLE = '''<style>
 
   /* --- Card-table: TEK SATIR + rozet sütunu SABİT (oyun isimleri hizalı) --- */
   .gp-card-table-inner .card-row {
-    grid-template-columns: 94px 1fr auto !important;
+    grid-template-columns: 108px 1fr auto !important;
     grid-template-rows: auto !important;
     gap: 4px 9px !important; padding: 11px 12px !important; align-items: center !important;
   }
   .gp-card-table-inner .card-row > .gp-badge {
     grid-row: 1 !important; grid-column: 1 !important;
     width: 100% !important; min-width: 0 !important; box-sizing: border-box;
-    font-size: 0.44em !important; padding: 3px 4px !important; letter-spacing: 0.03em !important; text-align: center;
+    font-size: 0.55em !important; padding: 3px 5px !important; letter-spacing: 0.02em !important; text-align: center;
   }
   .gp-card-table-inner .card-row > .gp-name {
     grid-row: 1 !important; grid-column: 2 !important; font-size: 0.8em !important; line-height: 1.28 !important;
   }
   .gp-card-table-inner .card-row > .gp-meta {
     grid-row: 1 !important; grid-column: 3 !important; text-align: right !important;
-    font-size: 0.58em !important; padding-left: 0 !important; white-space: normal !important;
-    max-width: 104px; line-height: 1.35 !important;
+    font-size: 0.62em !important; padding-left: 0 !important; white-space: normal !important;
+    max-width: 112px; line-height: 1.35 !important;
   }
 
   /* --- FAQ: soru ve cevap sola dayalı, okunur --- */

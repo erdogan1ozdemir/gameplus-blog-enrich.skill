@@ -25,7 +25,7 @@ Skill iki blog tipini ayırt eder; bileşen seti farklıdır:
 | Öğe | Genel Blog (rehber/listicle) | GFN Thursday (haftalık) |
 |---|---|---|
 | Meta header | `⚡ GAME+ Blog · 📅 Güncellenme: YIL` | `⚡ GAME+ Blog · GFN Thursday · 📅 tarih` |
-| Info-card | ✅ (4 metrik: incelenen sayı, öne çıkan, türler…) | ❌ (kaldırıldı — bariz bilgi koymuyoruz) |
+| Info-card | ✅ (4 metrik: incelenen sayı, öne çıkan, türler…) | ✅ (4 metrik: bu ay/hafta eklenen, haftanın öne çıkanı, öne çıkan dönüş, platformlar) |
 | Card-table | "En İyi N …" tıklanabilir liste (oyun bölümlerine kayar) | "Bu Hafta Eklenen Oyunlar" (platform linkli) |
 | CTA sayısı | 3 (Paketler ortada, Oyunlar orta-son, dual End CTA) | **Tek** End CTA + 1 compact featured CTA |
 | Compact CTA | yok | ✅ öne çıkan oyun için (Controller-Tag) |

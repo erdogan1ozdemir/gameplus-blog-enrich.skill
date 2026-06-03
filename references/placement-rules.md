@@ -31,7 +31,7 @@ Sıra:
 ## GFN Thursday (haftalık derleme)
 
 Farklar:
-1. **H1'den sonra:** `toc + tldr` — **meta header YOK** (render_meta ekleme; CMS kategori + tarihi zaten gösterir), **info-card YOK.**
+1. **H1'den sonra:** `toc + tldr + info-card` — **meta header YOK** (render_meta ekleme; CMS kategori + tarihi zaten gösterir). **TLDR ve info-card GFN'de de ZORUNLU.** GFN info-card 4 metrik: "Bu Ay/Hafta Eklenen" (oyun sayısı), "Haftanın Öne Çıkanı" (oyun), "Öne Çıkan Dönüş/İkinci Oyun", "Platformlar" (Steam · Epic · Xbox).
 2. **Compact CTA (Controller-Tag):** haftanın öne çıkan oyununun bölümünden hemen sonra / 2. H2'den önce. Tek öne çıkan oyun için.
 3. **Editör notu:** öne çıkan oyunun video embed'inden sonra (opsiyonel).
 4. **Oyun listeleri → GERÇEK TABLO**, card-table DEĞİL. `render_table(["Oyun","Platform ve Çıkış"], rows)` kullan; rozetsiz card-table sol sütunu boş bırakıp "tablo gibi" durmuyor. Her satır: `["<strong>Oyun Adı</strong>", platform/çıkış bilgisi]`; ikinci sütundaki platform adlarını **docx'teki gerçek mağaza linkleriyle** bağla (linkify_platforms arama linki üretir; varsa docx'in tam ürün URL'lerini tercih et). Birden fazla liste varsa (bu hafta eklenenler / ayın geri kalanı / önceki ay öne çıkanlar) her biri için **ayrı H3 + tablo**.
