@@ -1,0 +1,7 @@
+scripts/_fonts/*.otf
+scripts/_fonts/*.woff2
+scripts/_fonts/*.ttf
+__pycache__/
+*.pyc
+.DS_Store
+*.bak

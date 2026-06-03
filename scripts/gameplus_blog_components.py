@@ -24,25 +24,52 @@ PAGE_HEAD = '''<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>__TITLE__</title>
 <style>
+  /* Önizleme tipografisi gameplus.com.tr blog ile bire bir (GreycliffCF, 20px gövde, 1200px kolon). Yalnızca önizleme; CMS gövdesi etkilenmez. */
+  @font-face { font-family:'GreycliffCF'; font-style:normal; font-weight:400; font-display:swap; src:url('https://gameplus.com.tr/_next/static/media/GreycliffCF-Regular.55993c60.otf') format('opentype'); }
+  @font-face { font-family:'GreycliffCF'; font-style:normal; font-weight:500; font-display:swap; src:url('https://gameplus.com.tr/_next/static/media/GreycliffCF-Medium.b24079d5.woff2') format('woff2'); }
+  @font-face { font-family:'GreycliffCF'; font-style:normal; font-weight:700; font-display:swap; src:url('https://gameplus.com.tr/_next/static/media/GreycliffCF-Bold.d881132f.woff2') format('woff2'); }
   * { box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; color: #e5e7eb; line-height: 1.65; background: #000; }
-  h1 { font-size: 2.1em; line-height: 1.25; margin: 16px 0 16px; color: #fff; letter-spacing: -0.01em; }
-  h2 { font-size: 1.5em; line-height: 1.3; margin: 40px 0 14px; color: #fff; letter-spacing: -0.01em; }
-  h3 { font-size: 1.2em; line-height: 1.35; margin: 30px 0 12px; color: #f3f4f6; }
-  h4 { font-size: 1.05em; margin: 22px 0 10px; color: #e5e7eb; }
-  p { margin: 12px 0; color: #cbd5e1; }
-  ul, ol { margin: 14px 0; padding-left: 24px; color: #cbd5e1; }
-  li { margin: 6px 0; }
+  body { font-family: GreycliffCF, -apple-system, "system-ui", "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif; max-width: 1200px; margin: 0 auto; padding: 28px 20px 80px; color: #b2b2b2; font-size: 20px; line-height: 1.5; background: #000; }
+  h1 { font-size: 40px; font-weight: 500; line-height: 1.15; margin: 0 0 6.5px; color: #fff; }
+  h2 { font-size: 32px; font-weight: 500; line-height: 1.2; margin: 24px 0 6.5px; color: #fff; }
+  h3 { font-size: 22.75px; font-weight: 500; line-height: 1.25; margin: 18px 0 6.5px; color: #fff; }
+  h4 { font-size: 20px; font-weight: 500; line-height: 1.3; margin: 14px 0 6.5px; color: #fff; }
+  p { margin: 0 0 13px; color: #b2b2b2; }
+  ul, ol { margin: 0 0 13px; padding-left: 24px; color: #b2b2b2; }
+  li { margin: 4px 0; }
   ul li p, ol li p { margin: 0; }
   a { color: #a3e635; text-decoration: underline; }
   a:hover { color: #76b900; }
   em { font-style: italic; }
-  strong { font-weight: 600; color: #f3f4f6; }
+  strong { font-weight: 700; }
+  @media (max-width: 700px) {
+    body { font-size: 16px; line-height: 1.6; padding: 18px 16px 60px; }
+    h1 { font-size: 30px; } h2 { font-size: 24px; } h3 { font-size: 19px; } h4 { font-size: 17px; }
+  }
 </style>
 </head>
 <body>
 '''
 PAGE_FOOT = '\n</body>\n</html>'
+
+
+def embed_fonts(html):
+    """Make a preview self-contained: replace the GreycliffCF gameplus URLs with
+    base64 data URIs (gameplus serves fonts WITHOUT CORS, so cross-origin @font-face
+    fails on localhost/Vercel). Reads the bundled fonts in scripts/_fonts/."""
+    import base64, os
+    base = os.path.join(os.path.dirname(__file__), "_fonts")
+    mapping = {
+        "https://gameplus.com.tr/_next/static/media/GreycliffCF-Regular.55993c60.otf": ("reg.otf", "font/otf"),
+        "https://gameplus.com.tr/_next/static/media/GreycliffCF-Medium.b24079d5.woff2": ("med.woff2", "font/woff2"),
+        "https://gameplus.com.tr/_next/static/media/GreycliffCF-Bold.d881132f.woff2": ("bold.woff2", "font/woff2"),
+    }
+    for url, (fn, mime) in mapping.items():
+        fp = os.path.join(base, fn)
+        if os.path.exists(fp):
+            with open(fp, "rb") as f:
+                html = html.replace(url, "data:%s;base64,%s" % (mime, base64.b64encode(f.read()).decode()))
+    return html
 
 # === SVG ICONS (premium replacements for emoji) ===
 # Trophy icon for "Best Of" lists (replaces star)
@@ -117,7 +144,7 @@ ANIMATED_BORDER_STYLE = '''<style>
 .faq-item[open] .faq-icon { transform: rotate(45deg); color: #76b900 !important; }
 .faq-item summary:hover .faq-icon { color: #f59e0b; }
 /* YouTube embed wrapper smaller + centered */
-.gp-yt-wrap { max-width: 720px; margin: 1.5em auto !important; box-shadow: 0 4px 14px rgba(0,0,0,0.5); }
+.gp-yt-wrap { max-width: 560px; margin: 1.5em 0 !important; }
 /* Mobile: card-table responsive */
 @media (max-width: 700px) {
   .gp-card-table-inner .card-row {
@@ -145,7 +172,80 @@ ANIMATED_BORDER_STYLE = '''<style>
     padding-left: 0 !important;
   }
   .gp-game-inline > aside { float: none !important; width: 100% !important; margin: 0 0 16px 0 !important; }
-  .gp-yt-wrap { margin: 1em auto !important; }
+  .gp-yt-wrap { margin: 1em 0 !important; }
+}
+
+/* ===== v10 genel revizeler: embed 16:9, tablo alt kapatma, kupa ortala, FAQ sol, mobil responsive ===== */
+/* ===== YouTube embed: 16:9 (kare değil), sola dayalı, küçük ===== */
+.gp-yt-wrap { max-width: 560px; margin: 1.5em 0 !important; }
+.gp-yt-wrap iframe { display: block; width: 100% !important; aspect-ratio: 16 / 9 !important; height: auto !important; border: 0; border-radius: 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.5); }
+
+/* ===== Tabloların altını kapat: tek temiz çerçeve, son satır ayracı ===== */
+.table-wrap.gp-layer::before,
+.card-table.gp-layer::before { display: none !important; }
+.table-wrap { border: 1px solid rgba(118,185,0,0.38) !important; }
+.gp-card-table-inner { border: 1px solid rgba(118,185,0,0.38) !important; }
+.table-wrap tbody tr:last-child td { border-bottom: 1px solid rgba(255,255,255,0.06) !important; }
+
+/* ===== Card-table başlığı (kupa + başlık) tam ortalı ===== */
+.card-table-wrap > div:first-child { text-align: center; }
+.card-table-wrap h3 { display: flex !important; align-items: center !important; justify-content: center !important; gap: 9px !important; }
+.card-table-wrap h3 > svg { margin-right: 0 !important; vertical-align: middle !important; }
+.card-table-wrap h3 > span { min-width: 0; }
+
+/* ===== FAQ soruları biraz daha sola dayalı ===== */
+.faq-item summary { padding: 14px 16px !important; gap: 10px !important; }
+
+/* ===== MOBİL (<=700px) ===== */
+@media (max-width: 700px) {
+  /* --- Karşılaştırma tablosu: yatay kaydırma yok, tüm sütunlar görünür, okunur punto --- */
+  .table-wrap > div { overflow-x: visible !important; }
+  .table-wrap table { font-size: 0.62em !important; table-layout: fixed; width: 100% !important; }
+  .table-wrap th, .table-wrap td {
+    padding: 8px 7px !important; white-space: normal !important;
+    word-break: break-word; overflow-wrap: anywhere; vertical-align: top; line-height: 1.4 !important;
+  }
+  .table-wrap th { letter-spacing: 0.04em !important; }
+  .table-wrap th:nth-child(1), .table-wrap td:nth-child(1) { width: 34%; }
+  .table-wrap th:nth-child(2), .table-wrap td:nth-child(2) { width: 26%; }
+  .table-wrap th:nth-child(3), .table-wrap td:nth-child(3) { width: 20%; }
+  .table-wrap th:nth-child(4), .table-wrap td:nth-child(4) { width: 20%; }
+
+  /* --- Card-table: TEK SATIR + rozet sütunu SABİT (oyun isimleri hizalı) --- */
+  .gp-card-table-inner .card-row {
+    grid-template-columns: 94px 1fr auto !important;
+    grid-template-rows: auto !important;
+    gap: 4px 9px !important; padding: 11px 12px !important; align-items: center !important;
+  }
+  .gp-card-table-inner .card-row > .gp-badge {
+    grid-row: 1 !important; grid-column: 1 !important;
+    width: 100% !important; min-width: 0 !important; box-sizing: border-box;
+    font-size: 0.44em !important; padding: 3px 4px !important; letter-spacing: 0.03em !important; text-align: center;
+  }
+  .gp-card-table-inner .card-row > .gp-name {
+    grid-row: 1 !important; grid-column: 2 !important; font-size: 0.8em !important; line-height: 1.28 !important;
+  }
+  .gp-card-table-inner .card-row > .gp-meta {
+    grid-row: 1 !important; grid-column: 3 !important; text-align: right !important;
+    font-size: 0.58em !important; padding-left: 0 !important; white-space: normal !important;
+    max-width: 104px; line-height: 1.35 !important;
+  }
+
+  /* --- FAQ: soru ve cevap sola dayalı, okunur --- */
+  .faq-item summary { padding: 13px 13px !important; gap: 9px !important; font-size: 0.95em !important; }
+  .faq-item > div { padding: 12px 14px 15px 14px !important; }
+
+  /* --- Hızlı Özet (TLDR): kompakt ve okunur --- */
+  .tldr-block .gp-conic-inner { padding: 15px 15px !important; font-size: 0.85em !important; }
+  .tldr-block li { gap: 9px !important; }
+
+  /* --- CTA blokları: kompakt, butonlar tam genişlik --- */
+  .cta-end .gp-conic-inner, .cta-paketler .gp-conic-inner, .cta-oyunlar .gp-conic-inner { padding: 18px 16px !important; }
+  .cta-end a, .cta-paketler a, .cta-oyunlar a { flex: 1 1 100% !important; justify-content: center !important; box-sizing: border-box; }
+  .cta-end .gp-conic-inner > div:last-child { gap: 9px !important; }
+
+  /* --- info-card: 2 sütun --- */
+  .info-card { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
 }
 </style>
 '''

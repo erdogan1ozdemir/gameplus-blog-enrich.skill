@@ -59,41 +59,50 @@ def minify_html(html):
     return html.strip()
 
 
-def _split_for_cell(minified):
-    """Return (part1, part2). part2 is '' if it fits in one cell."""
+def _split_for_cells(minified):
+    """Split into a list of chunks each <= EXCEL_CELL_LIMIT, preferring tag boundaries.
+    Concatenating the chunks in order reconstructs the original."""
     if len(minified) <= EXCEL_CELL_LIMIT:
-        return minified, ''
-    mid = len(minified) // 2
-    # Try to split on a tag boundary near the middle
-    window = minified[mid:mid + 5000]
-    m = re.search(r'><', window)
-    split = mid + (m.start() + 1) if m else EXCEL_CELL_LIMIT
-    if split <= 0 or split > EXCEL_CELL_LIMIT:
-        split = EXCEL_CELL_LIMIT
-    return minified[:split], minified[split:]
+        return [minified]
+    chunks, s = [], minified
+    while len(s) > EXCEL_CELL_LIMIT:
+        window = s[EXCEL_CELL_LIMIT - 3000:EXCEL_CELL_LIMIT]
+        ms = list(re.finditer(r'><', window))
+        split = (EXCEL_CELL_LIMIT - 3000) + ms[-1].start() + 1 if ms else EXCEL_CELL_LIMIT
+        chunks.append(s[:split]); s = s[split:]
+    if s:
+        chunks.append(s)
+    return chunks
 
 
 def export_excel(items, out_path):
+    """One row per blog. HTML is minified then split across HTML 1..N columns
+    (each <= 32.7k chars). Concatenate HTML 1..N in order to get the full body."""
     from openpyxl import Workbook
-    from openpyxl.styles import Font, Alignment
+    from openpyxl.styles import Font
+    rows, max_parts = [], 1
+    for item in items:
+        minified = minify_html(item['html'])
+        parts = _split_for_cells(minified)
+        max_parts = max(max_parts, len(parts))
+        rows.append((item.get('title', ''), item.get('slug', ''), len(minified), parts))
     wb = Workbook()
     ws = wb.active
     ws.title = "Gameplus Blog İçerikleri"
-    headers = ['Başlık', 'HTML (Part 1)', 'HTML (Part 2 — boşsa Part 1 tek başına)', 'Slug', 'Karakter']
+    headers = ['Başlık', 'Slug', 'Karakter'] + ['HTML %d' % (i + 1) for i in range(max_parts)]
     for col, h in enumerate(headers, start=1):
-        c = ws.cell(row=1, column=col, value=h)
-        c.font = Font(bold=True, size=11)
-    for i, item in enumerate(items, start=2):
-        minified = minify_html(item['html'])
-        p1, p2 = _split_for_cell(minified)
-        ws.cell(row=i, column=1, value=item.get('title', ''))
-        ws.cell(row=i, column=2, value=p1)
-        ws.cell(row=i, column=3, value=p2)
-        ws.cell(row=i, column=4, value=item.get('slug', ''))
-        ws.cell(row=i, column=5, value=len(minified))
-    widths = {'A': 46, 'B': 100, 'C': 60, 'D': 40, 'E': 12}
-    for col, w in widths.items():
-        ws.column_dimensions[col].width = w
+        ws.cell(row=1, column=col, value=h).font = Font(bold=True, size=11)
+    for r, (title, slug, n, parts) in enumerate(rows, start=2):
+        ws.cell(row=r, column=1, value=title)
+        ws.cell(row=r, column=2, value=slug)
+        ws.cell(row=r, column=3, value=n)
+        for j, part in enumerate(parts):
+            ws.cell(row=r, column=4 + j, value=part)
+    ws.column_dimensions['A'].width = 46
+    ws.column_dimensions['B'].width = 40
+    ws.column_dimensions['C'].width = 12
+    for j in range(max_parts):
+        ws.column_dimensions[chr(ord('D') + j)].width = 100
     ws.freeze_panes = 'A2'
     wb.save(out_path)
     return out_path

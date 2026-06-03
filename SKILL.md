@@ -117,12 +117,12 @@ Tam liste **`references/content-rules.md`**'de. En kritikleri:
 
 | `fmt` | Sonuç |
 |---|---|
-| `excel` (varsayılan) | `gameplus-blog-icerikler.xlsx` — satır başına blog: Başlık \| HTML(1) \| HTML(2) \| Slug \| Karakter. 32.767 char limiti için HTML iki hücreye bölünür. |
+| `excel` (varsayılan çıktının parçası) | `gameplus-blog-icerikler.xlsx` — satır başına blog: Başlık \| Slug \| Karakter \| HTML 1 \| HTML 2 \| … . 32.767 char limiti için HTML gereken kadar parçaya bölünür; **HTML 1..N sırayla birleştirilince tam body olur.** Markanın CMS'e yapıştırıp canlıya alması için. |
 | `files` | Her blog için ayrı `ornek-blog-<slug>-body-only.html` |
-| `files-preview` | Her blog için tarayıcıda açılır tam HTML |
+| `files-preview` | Her blog için tarayıcıda açılır tam HTML — **canlı gameplus tipografisi** (GreycliffCF, 20px gövde, 1200px kolon). `embed_fonts(html)` ile fontları base64 göm → self-contained, Vercel'de de birebir. |
 | `combined` | Tek dosyada tüm bloglar (hızlı önizleme) |
 
-Çıkışı CWD'ye yaz (genelde `/Users/Erdo/Desktop/Claude Projects/Dispatch/`). Kullanıcı formatı belirtmezse Excel yap ve "ayrı dosya / önizleme de isteyebilirsin" diye belirt.
+Çıkışı CWD'ye yaz (genelde `/Users/Erdo/Desktop/Claude Projects/Dispatch/`). **Varsayılan: her zaman İKİ çıktıyı birden üret** — (1) `files-preview` (canlı tipografili, `embed_fonts()` ile GreycliffCF gömülü, bire bir önizleme; markaya/müşteriye gösterilir, istenirse GitHub/Vercel'e push edilir) ve (2) `excel` rollup (body HTML; markanın CMS'e yapıştırıp canlıya alması için). Kullanıcı tersini söylemedikçe ikisini de teslim et. Önizleme tipografisi `PAGE_HEAD`'de gameplus blog ile birebir (GreycliffCF @font-face, 1200px kolon, 20px gövde, h1 40 / h2 32 / h3 22.75px); bu yalnızca önizleme içindir, CMS body'si etkilenmez.
 
 ## Referans dosyaları
 

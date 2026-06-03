@@ -31,13 +31,13 @@ Sıra:
 ## GFN Thursday (haftalık derleme)
 
 Farklar:
-1. **H1'den sonra:** `meta(GFN) + toc + tldr` — **info-card YOK.**
+1. **H1'den sonra:** `toc + tldr` — **meta header YOK** (render_meta ekleme; CMS kategori + tarihi zaten gösterir), **info-card YOK.**
 2. **Compact CTA (Controller-Tag):** haftanın öne çıkan oyununun bölümünden hemen sonra / 2. H2'den önce. Tek öne çıkan oyun için.
 3. **Editör notu:** öne çıkan oyunun video embed'inden sonra (opsiyonel).
-4. **Oyun listesi → Card-table:** "Bu Hafta Eklenen Oyunlar". `meta`'ları `linkify_platforms()` ile platform-linkli ver, `anchor` koyma (oyunların ayrı bölümü yok).
-5. **Önceki haftalar:** orijinal link listesini `render_prev_weeks_cards()` grid'i ile değiştir.
-6. **Hatırlatma:** lisans uyarısı.
-7. **End CTA (TEK):** son H2'den önce. `btn2_label="GeForce NOW Oyunları", btn2_url=".../gfn/oyunlar", chip2="Oyunlar"`. **İkinci ayrı CTA bloğu koyma** — tek blok Paketler + Oyunlar'ı kapsar.
+4. **Oyun listeleri → GERÇEK TABLO**, card-table DEĞİL. `render_table(["Oyun","Platform ve Çıkış"], rows)` kullan; rozetsiz card-table sol sütunu boş bırakıp "tablo gibi" durmuyor. Her satır: `["<strong>Oyun Adı</strong>", platform/çıkış bilgisi]`; ikinci sütundaki platform adlarını **docx'teki gerçek mağaza linkleriyle** bağla (linkify_platforms arama linki üretir; varsa docx'in tam ürün URL'lerini tercih et). Birden fazla liste varsa (bu hafta eklenenler / ayın geri kalanı / önceki ay öne çıkanlar) her biri için **ayrı H3 + tablo**.
+5. **Hatırlatma:** lisans uyarısı (`render_highlight`).
+6. **End CTA (TEK):** `btn2_label="GeForce NOW Oyunları", btn2_url=".../gfn/oyunlar", chip2="Oyunlar"`. İkinci ayrı CTA bloğu koyma — tek blok Paketler + Oyunlar'ı kapsar.
+7. **"Önceki Haftalarda Neler Oldu?" bölümü EN ALTTA** (End CTA'dan SONRA, yazının son bloğu olarak): H2 + giriş paragrafı + `render_prev_weeks_cards()` grid. Kart alt etiketi **"Haftanın haberlerini oku →"** tarzında olsun; oyun-spesifik ("o haftanın yeni oyunları") yazma.
 
 ## Genel kurallar
 - Style bloğu (`ANIMATED_BORDER_STYLE`) final gövdenin **en başına bir kez**.
