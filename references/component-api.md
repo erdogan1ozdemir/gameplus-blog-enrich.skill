@@ -67,7 +67,7 @@ V9 layered + kompakt + Hover-Slide. `title` (trophy + gradient ile gösterilir).
 GFN'de `meta`'yı `linkify_platforms` ile platform-linkli ver, `anchor` koyma.
 
 ### `render_game_h3_inline(anchor, name, badge, badge_color, meta_text)`
-Genel blogda her oyun H3'ünü bu formata çevir: `[KORKU] Oyun Adı` + altında `Capcom · 2019 · RE Engine`. Card-table ile aynı görsel dil.
+**ZORUNLU standart — her oyun başlığı bu formatta** (genel blog listicle + State of Play gibi etkinlik özetleri). Düz `<h3>Oyun Adı</h3>` bırakma. Çıktı: `[TÜR] Oyun Adı` + altında `meta_text`. **`meta_text` = "Stüdyo · Yıl"** (ör. `Capcom · 2019`; engine opsiyonel olarak eklenebilir: `Capcom · 2019 · RE Engine`). Card-table satırıyla (badge=tür, meta="Stüdyo · Yıl") birebir aynı veri. Bkz. content-rules kural 11.
 
 ### `render_prev_weeks_cards(items)`
 **Sadece GFN.** Soft-border kart grid. `items` = `[{'url':..., 'date':'14 Mayıs 2026', 'label':'...'}, ...]`.

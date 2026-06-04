@@ -73,7 +73,7 @@ faq    = render_faq_accordion([(soru, cevap), ...])
 - Karşılaştırma tablosu → ilgili kavram paragrafından sonra
 - **CTA Paketler** → 2. H2'den önce
 - **Card-table** → listicle'ın yerine, ilk oyun H3'ünden ÖNCE (genel blog); GFN'de oyun listesi yerine
-- Genel blogda her oyun H3'ü → `render_game_h3_inline()` ile tag+isim+meta formatına çevir
+- Genel blogda VE etkinlik özetlerinde (State of Play vb.) her oyun H3'ü → `render_game_h3_inline()` ile **tür etiketi + isim + "Stüdyo · Yıl"** formatına çevir (ZORUNLU, düz başlık bırakma)
 - **End CTA** → SSS H2'sinden önce
 - **FAQ accordion** → SSS bölümündeki H3+P çiftlerinin yerine
 
@@ -106,6 +106,7 @@ Detaylar **`references/design-system.md`**'de. Özet:
 
 Tam liste **`references/content-rules.md`**'de. En kritikleri:
 - **Yazarın cümlelerini ASLA değiştirme.** Sadece enrichment ekle.
+- **Oyun giriş formatı (HER YAZIDA AYNI):** Bir liste veya bölümdeki her oyun **tür etiketi + Stüdyo · Yıl** taşır. Oyunun kendi başlığı varsa `render_game_h3_inline(anchor, isim, "TÜR", renk, "Stüdyo · Yıl")` kullan, düz `<h3>Oyun Adı</h3>` bırakma; card-table'da `badge`=tür, `meta`="Stüdyo · Yıl". Yeni duyurulan oyunda kesin yıl yoksa dönem yaz ("2027 (beklenen)", "Sonbahar 2026", "Belirsiz", "Yayında"). Detay: `content-rules.md` kural 11.
 - **CTA dürüstlüğü:** "tüm yapımlara erişebilirsin" DEME (her oyun GFN'de olmayabilir). "satın aldığın / sahip olduğun / kütüphanendeki oyunlar" de.
 - **Lisans hatırlatması:** GFN oyun satmaz, sadece çalıştırır; oyunun ilgili platformda (Steam/Xbox/Epic) lisansına sahip olmak gerekir.
 - **GFN Thursday'de tek CTA** yeterli (Paketler + Oyunlar yönlendirmesi). İki ayrı blok koyma.
