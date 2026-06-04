@@ -37,10 +37,17 @@ GeForce NOW oyun SATMAZ, sadece bulutta ÇALIŞTIRIR. Oynamak için oyunun ilgil
 ## 7. EKLENMEYECEKLER
 - Görsel alt text, caption, figure açıklaması **EKLEME**.
 - Schema markup / JSON-LD **EKLEME**.
-- Bariz/gereksiz info-card alanları koyma (GFN'de "Yayın Tarihi / Kategori" gibi — bunlar zaten belli; GFN'de info-card hiç yok).
+- Bariz/gereksiz info-card alanları koyma (örn. "Yayın Tarihi / Kategori"; bunlar CMS'te zaten belli). GFN'de info-card VAR (4 metrik), ama metrikleri yazının türüne göre seç (bkz. kural 10).
 
 ## 8. Platform linkleri (GFN card-table)
 Eklenen oyunların Steam/Xbox/Epic isimleri `linkify_platforms()` ile arama linkine çevrilir + küçük ↗ ikon. Orijinal yazıda zaten link varsa onu koru.
 
 ## 9. Öne çıkarılan oyun (GFN)
 Çok öne çıkan bir oyun varsa (haftanın yıldızı) orta kısma compact CTA. Kompakt, tek satır, dar — sayfayı boğmaz.
+
+## 10. GFN info-card metrikleri: aylık vs haftalık (dürüstlük)
+GFN yazılarının iki ritmi var; info-card ve TLDR metrikleri buna göre değişir:
+- **Ay başı / aylık yazı:** "Bu Ay Eklenen: N Oyun" metriği uygundur (ayın toplam yeni oyun sayısı).
+- **Haftalık yazı:** "Bu Ay Eklenen oyun sayısı" metriğini ZORLAMA. Her hafta yeni oyun eklenmeyebilir; bazı haftalar yeni oyun yerine **DLC, yeni sezon veya güncelleme (update)** gelir, ya da **katalogdan kalkmış bir oyun geri döner**. **"Bu Hafta Eklenen: 0" gibi boş/olumsuz bir metrik KOYMA.**
+- Haftalık metrikleri o haftanın GERÇEK içeriğine göre seç. Örnekler: "Bu Hafta Eklenen" (yalnızca gerçekten yeni oyun varsa sayı ver), "Haftanın Öne Çıkanı" (oyun), "Öne Çıkan Güncelleme / DLC / Yeni Sezon", "Geri Dönen Oyun", "Platformlar" (Steam · Epic · Xbox).
+- TLDR ilk maddesi de aynı mantıkla: yeni oyun yoksa "Bu hafta: N yeni oyun" deme; "Bu hafta öne çıkan: X'in yeni sezonu / Y güncellemesi / geri dönen Z" gibi o haftaya özgü bir özet ver.

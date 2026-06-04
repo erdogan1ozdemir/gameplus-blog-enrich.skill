@@ -31,7 +31,9 @@ Sıra:
 ## GFN Thursday (haftalık derleme)
 
 Farklar:
-1. **H1'den sonra:** `toc + tldr + info-card` — **meta header YOK** (render_meta ekleme; CMS kategori + tarihi zaten gösterir). **TLDR ve info-card GFN'de de ZORUNLU.** GFN info-card 4 metrik: "Bu Ay/Hafta Eklenen" (oyun sayısı), "Haftanın Öne Çıkanı" (oyun), "Öne Çıkan Dönüş/İkinci Oyun", "Platformlar" (Steam · Epic · Xbox).
+1. **H1'den sonra:** `toc + tldr + info-card` — **meta header YOK** (render_meta ekleme; CMS kategori + tarihi zaten gösterir). **TLDR ve info-card GFN'de de ZORUNLU.** GFN info-card 4 metrik; metrikler yazının ritmine göre değişir:
+   - **Aylık / ay başı yazısı:** "Bu Ay Eklenen: N Oyun" (ayın toplamı), "Ayın/Haftanın Öne Çıkanı", "Öne Çıkan Dönüş", "Platformlar" (Steam · Epic · Xbox).
+   - **Haftalık yazı:** "Bu Ay Eklenen oyun sayısı" metriğini ZORLAMA — her hafta yeni oyun eklenmeyebilir (bazı haftalar yeni oyun yerine DLC / yeni sezon / güncelleme gelir ya da katalogdan kalkan bir oyun geri döner). **"Bu Hafta Eklenen: 0" gibi olumsuz/boş değer gösterme;** metrikleri o haftanın gerçek içeriğine göre seç (örn. "Bu Hafta Eklenen" yalnızca gerçekten yeni oyun varsa, "Haftanın Öne Çıkanı", "Öne Çıkan Güncelleme/DLC/Sezon", "Geri Dönen Oyun", "Platformlar"). Ayrıntı: `content-rules.md` kural 10.
 2. **Compact CTA (Controller-Tag):** haftanın öne çıkan oyununun bölümünden hemen sonra / 2. H2'den önce. Tek öne çıkan oyun için.
 3. **Editör notu:** öne çıkan oyunun video embed'inden sonra (opsiyonel).
 4. **Oyun listeleri → GERÇEK TABLO**, card-table DEĞİL. `render_table(["Oyun","Platform ve Çıkış"], rows)` kullan; rozetsiz card-table sol sütunu boş bırakıp "tablo gibi" durmuyor. Her satır: `["<strong>Oyun Adı</strong>", platform/çıkış bilgisi]`; ikinci sütundaki platform adlarını **docx'teki gerçek mağaza linkleriyle** bağla (linkify_platforms arama linki üretir; varsa docx'in tam ürün URL'lerini tercih et). Birden fazla liste varsa (bu hafta eklenenler / ayın geri kalanı / önceki ay öne çıkanlar) her biri için **ayrı H3 + tablo**.
