@@ -25,7 +25,7 @@ from gameplus_blog_components import *
 Üst meta chip'i. Genel blog: `render_meta("Güncellenme: 2026")`. GFN: `render_meta("21 Mayıs 2026", "GAME+ Blog · GFN Thursday")`.
 
 ### `render_tldr(items)`
-`items` = HTML string listesi. Her madde yeşil ✓ ile. V8 conic glow çerçeveli. Maddeleri `<strong>Etiket:</strong> açıklama` formatında ver.
+`items` = HTML string listesi (**3-6 madde, duruma göre** — her zaman 4 şart değil). Her madde yeşil ✓ ile. V8 conic glow çerçeveli. Maddeleri `<strong>Etiket:</strong> açıklama` formatında ver.
 
 ### `render_info_card(badges, style="grid")`
 - `style="grid"` (genel blog): `badges` = `[(etiket, değer), ...]`. 4 metrik önerilir (İncelenen Remake / Beklenen / Öne Çıkan Stüdyo / Türler).
@@ -62,12 +62,21 @@ V9 layered, zebra striped, yumuşak çerçeve. `headers`=liste, `rows`=liste lis
 V9 layered + kompakt + Hover-Slide. `title` (trophy + gradient ile gösterilir). `games` listesi:
 ```python
 {'name': 'Resident Evil 2 Remake', 'badge': 'KORKU', 'badge_color': '#dc2626',
- 'meta': 'Capcom · 2019', 'anchor': 'resident-evil-2-remake'}  # anchor varsa satır tıklanabilir
+ 'meta': 'Capcom · 2019', 'anchor': 'resident-evil-2-remake',  # anchor varsa satır tıklanabilir
+ 'badge_href': None}  # opsiyonel: rozet kategori linki — YALNIZCA anchor yoksa uygulanır (iç içe <a> olmaz)
 ```
-GFN'de `meta`'yı `linkify_platforms` ile platform-linkli ver, `anchor` koyma.
+GFN'de `meta`'yı `linkify_platforms` ile platform-linkli ver, `anchor` koyma. Tür kategori linkini genelde **oyun başlığında** ver (card-row zaten jump-link).
 
-### `render_game_h3_inline(anchor, name, badge, badge_color, meta_text)`
-**ZORUNLU standart — her oyun başlığı bu formatta** (genel blog listicle + State of Play gibi etkinlik özetleri). Düz `<h3>Oyun Adı</h3>` bırakma. Çıktı: `[TÜR] Oyun Adı` + altında `meta_text`. **`meta_text` = "Stüdyo · Yıl"** (ör. `Capcom · 2019`; engine opsiyonel olarak eklenebilir: `Capcom · 2019 · RE Engine`). Card-table satırıyla (badge=tür, meta="Stüdyo · Yıl") birebir aynı veri. Bkz. content-rules kural 11.
+### `render_game_h3_inline(anchor, name, badge, badge_color, meta_text, level="h3", badge_href=None)`
+**ZORUNLU standart — yazıda >1 oyun varsa her oyun başlığı bu formatta** (genel blog listicle + State of Play gibi etkinlik özetleri). Düz `<h2/h3/h4>Oyun Adı</…>` bırakma.
+- **`level`** = `"h2" | "h3" | "h4"` — çevredeki başlık seviyesine uy.
+- Çıktı: `[TÜR] Oyun Adı` + altında `meta_text`. **`meta_text` = "Stüdyo · Yıl"** (ör. `Capcom · 2019`; engine opsiyonel: `Capcom · 2019 · RE Engine`).
+- **Başlık metnine RENK atanmaz** (CMS başlık rengini verir; yük azalır). Rozet kendi tür rengini, meta soluk rengi taşır.
+- **`badge_href`** verilirse tür rozeti o GFN kategori sayfasına iç link olur. URL'i `category_url_for(badge)` bulur; sayfa başına TEK link için build script `seen` ile dedup yapar (content-rules kural 12).
+- Card-table satırıyla (badge=tür, meta="Stüdyo · Yıl") birebir aynı veri.
+
+### `category_url_for(badge)` + `GFN_CATEGORY_URLS`
+`badge` (ör. "Aksiyon", "Aksiyon-RPG") markanın linklenebilir GFN kategorilerinden birine fit ediyorsa kategori URL'ini döndürür, yoksa `None`. Birleşik rozette ilk eşleşen parça kazanır. Türkçe/case duyarsız. Linklenebilir set: strateji, aksiyon, simulasyon, dovus-oyunu, yaris, fps, mmo, macera, steam, canlandirma, moba, bagimsiz, arcade, bulmaca, basit-eglence, aile-dostu, platform, spor, ubisoft-connect, populer-oyunlar.
 
 ### `render_prev_weeks_cards(items)`
 **Sadece GFN.** Soft-border kart grid. `items` = `[{'url':..., 'date':'14 Mayıs 2026', 'label':'...'}, ...]`.

@@ -27,7 +27,7 @@ Skill iki blog tipini ayırt eder; bileşen seti farklıdır:
 | Meta header | `⚡ GAME+ Blog · 📅 Güncellenme: YIL` | `⚡ GAME+ Blog · GFN Thursday · 📅 tarih` |
 | Info-card | ✅ (4 metrik: incelenen sayı, öne çıkan, türler…) | ✅ 4 metrik. **Aylık:** "Bu Ay Eklenen N". **Haftalık:** metrikleri o haftaya göre uyarla — yeni oyun olmayabilir (DLC/sezon/update/geri dönen); "0" gösterme (bkz. content-rules kural 10) |
 | Card-table | "En İyi N …" tıklanabilir liste (oyun bölümlerine kayar) | "Bu Hafta Eklenen Oyunlar" (platform linkli) |
-| CTA sayısı | 3 (Paketler ortada, Oyunlar orta-son, dual End CTA) | **Tek** End CTA + 1 compact featured CTA |
+| CTA sayısı | **2-3** (her zaman 3 şart değil): Paketler + dual End zorunlu, CTA Oyunlar opsiyonel | **Tek** End CTA + 1 compact featured CTA |
 | Compact CTA | yok | ✅ öne çıkan oyun için (Controller-Tag) |
 | Önceki haftalar | yok | ✅ soft-border kart grid |
 | Editör notu / Hatırlatma | ihtiyaç oldukça | ihtiyaç oldukça |
@@ -106,7 +106,10 @@ Detaylar **`references/design-system.md`**'de. Özet:
 
 Tam liste **`references/content-rules.md`**'de. En kritikleri:
 - **Yazarın cümlelerini ASLA değiştirme.** Sadece enrichment ekle.
-- **Oyun giriş formatı (HER YAZIDA AYNI):** Bir liste veya bölümdeki her oyun **tür etiketi + Stüdyo · Yıl** taşır. Oyunun kendi başlığı varsa `render_game_h3_inline(anchor, isim, "TÜR", renk, "Stüdyo · Yıl")` kullan, düz `<h3>Oyun Adı</h3>` bırakma; card-table'da `badge`=tür, `meta`="Stüdyo · Yıl". Yeni duyurulan oyunda kesin yıl yoksa dönem yaz ("2027 (beklenen)", "Sonbahar 2026", "Belirsiz", "Yayında"). Detay: `content-rules.md` kural 11.
+- **Özet (TLDR) madde sayısı:** duruma göre **3-6 madde** (her zaman 4 olması şart değil).
+- **Oyun giriş formatı (HER YAZIDA AYNI):** **Yazıda birden fazla oyundan bahsediliyorsa** her oyunun başına oyun başlığı ekle; **tür etiketi + Stüdyo · Yıl** taşı. Başlık **H2/H3/H4** olabilir (çevredeki seviyeye uy): `render_game_h3_inline(anchor, isim, "TÜR", renk, "Stüdyo · Yıl", level="h2|h3|h4")`. Düz `<h2/h3/h4>Oyun Adı</…>` bırakma. **Başlık metnine RENK atama** (CMS verir, yük azalır). Card-table'da `badge`=tür, `meta`="Stüdyo · Yıl". Yıl yoksa dönem ("2027 (beklenen)", "Belirsiz", "Yayında"). Tek oyun anlatılıyorsa başlık şart değil. Detay: `content-rules.md` kural 11.
+- **Tür rozeti → GFN kategorisi iç linki:** Tür GFN kategorilerinden birine fit ediyorsa rozet o kategori sayfasına iç link olur (`category_url_for(badge)`). **Sayfa başına her kategoriye TEK link** (zaten linkliyse tekrarlama). Detay: `content-rules.md` kural 12.
+- **Türler:** Mümkünse GFN kategorilerini kullan (oyun GFN'de varsa hangi kategoriye giriyorsa). GFN'de yoksa uygun türü seç; birden fazla türe uyuyorsa birleşik yaz (Aksiyon-Macera, Aksiyon-RPG, Indie-RPG).
 - **CTA dürüstlüğü:** "tüm yapımlara erişebilirsin" DEME (her oyun GFN'de olmayabilir). "satın aldığın / sahip olduğun / kütüphanendeki oyunlar" de.
 - **Lisans hatırlatması:** GFN oyun satmaz, sadece çalıştırır; oyunun ilgili platformda (Steam/Xbox/Epic) lisansına sahip olmak gerekir.
 - **GFN Thursday'de tek CTA** yeterli (Paketler + Oyunlar yönlendirmesi). İki ayrı blok koyma.

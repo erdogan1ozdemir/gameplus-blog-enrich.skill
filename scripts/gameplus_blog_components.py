@@ -291,9 +291,9 @@ def render_info_card(badges, style="grid"):
 
 # --- Article Meta (date + platform, premium SVG) ---
 def render_meta(date, category="GAME+ Blog"):
-    return f'''<div class="article-meta" style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:0.85em;color:#8b95a7;margin:0 0 20px;padding:12px 0;border-bottom:1px solid #1f1f1f;">
+    return f'''<div class="article-meta" style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:0.85em;color:#a8b2c0;margin:0 0 20px;padding:12px 0;border-bottom:1px solid #1f1f1f;">
   <span style="display:inline-flex;align-items:center;background:transparent;padding:6px 14px;border-radius:999px;color:#fbbf24;font-weight:700;border:1px solid #1f1f1f;letter-spacing:0.02em;">{SVG_BOLT}{category}</span>
-  <span style="display:inline-flex;align-items:center;font-weight:500;color:#8b95a7;">{SVG_CAL}{date}</span>
+  <span style="display:inline-flex;align-items:center;font-weight:500;color:#a8b2c0;">{SVG_CAL}{date}</span>
 </div>
 '''
 
@@ -407,14 +407,14 @@ def render_table(headers, rows):
 # --- Compact featured-game CTA (Controller Tag — gamepad icon + "ÖNE ÇIKAN" label) ---
 def render_compact_cta(game_name, tagline, button_label, button_url):
     gamepad = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#76b900" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><line x1="6" y1="11" x2="10" y2="11"/><line x1="8" y1="9" x2="8" y2="13"/><line x1="15" y1="12" x2="15.01" y2="12"/><line x1="18" y1="10" x2="18.01" y2="10"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>'
-    return f'''<div class="cta-compact" style="border-radius:12px;border:1px solid rgba(118,185,0,0.22);background:linear-gradient(90deg, rgba(118,185,0,0.06), transparent 40%), #000;padding:14px 18px;margin:24px auto;max-width:760px;box-shadow:0 2px 12px rgba(0,0,0,0.4);">
+    return f'''<div class="cta-compact" style="border-radius:12px;border:1px solid rgba(118,185,0,0.22);background:linear-gradient(90deg, rgba(118,185,0,0.06), transparent 40%);padding:14px 18px;margin:24px auto;max-width:760px;box-shadow:0 2px 12px rgba(0,0,0,0.4);">
 <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
   <div style="display:flex;align-items:center;gap:14px;flex:1;min-width:240px;">
     {gamepad}
     <div>
       <div style="font-size:0.6em;color:#76b900;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:3px;">★ Öne Çıkan</div>
       <div style="font-weight:800;color:#fff;font-size:0.98em;letter-spacing:-0.01em;line-height:1.3;">{game_name}</div>
-      <div style="font-size:0.8em;color:#9ca3af;line-height:1.4;margin-top:2px;">{tagline}</div>
+      <div style="font-size:0.8em;color:#a8b2c0;line-height:1.4;margin-top:2px;">{tagline}</div>
     </div>
   </div>
   <a href="{button_url}" style="display:inline-flex;align-items:center;background:#76b900;color:#fff;padding:9px 18px;border-radius:6px;font-weight:700;text-decoration:none;font-size:0.85em;letter-spacing:-0.005em;white-space:nowrap;box-shadow:0 2px 8px rgba(118,185,0,0.35);">{button_label}{SVG_ARROW}</a>
@@ -448,6 +448,39 @@ def hex_to_rgba(hex_color, alpha):
     r, g, b = int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
     return f'rgba({r},{g},{b},{alpha})'
 
+# --- Tür rozeti -> GFN kategori sayfası (iç link) ---
+# Yalnızca markanın linklenebilir dediği kategoriler. Tür rozeti bunlardan birine fit ediyorsa
+# rozet o kategoriye iç link olur. SAYFA BAŞINA HER KATEGORİYE EN FAZLA 1 LİNK (dedup build script'te).
+_GFN = "https://gameplus.com.tr/gfn/oyunlar/"
+GFN_CATEGORY_URLS = {
+    "STRATEJI": _GFN + "strateji", "AKSIYON": _GFN + "aksiyon", "SIMULASYON": _GFN + "simulasyon",
+    "DOVUS": _GFN + "dovus-oyunu", "DOVUS OYUNU": _GFN + "dovus-oyunu", "YARIS": _GFN + "yaris",
+    "FPS": _GFN + "fps", "MMO": _GFN + "mmo", "MACERA": _GFN + "macera", "STEAM": _GFN + "steam",
+    "CANLANDIRMA": _GFN + "canlandirma", "RPG": _GFN + "canlandirma", "MOBA": _GFN + "moba",
+    "BAGIMSIZ": _GFN + "bagimsiz", "INDIE": _GFN + "bagimsiz", "ARCADE": _GFN + "arcade",
+    "BULMACA": _GFN + "bulmaca", "BASIT EGLENCE": _GFN + "basit-eglence", "AILE DOSTU": _GFN + "aile-dostu",
+    "PLATFORM": _GFN + "platform", "SPOR": _GFN + "spor", "UBISOFT CONNECT": _GFN + "ubisoft-connect",
+    "POPULER": _GFN + "populer-oyunlar", "POPULER OYUNLAR": _GFN + "populer-oyunlar",
+}
+
+def _fold(s):
+    """Türkçe + büyük/küçük harf duyarsız anahtar (İ/ı/ş/ğ/ü/ö/ç sadeleştirilir)."""
+    s = (s or "").strip().upper()
+    for a, b in (("İ", "I"), ("I", "I"), ("Ş", "S"), ("Ğ", "G"), ("Ü", "U"), ("Ö", "O"), ("Ç", "C"), ("Â", "A")):
+        s = s.replace(a, b)
+    return s
+
+def category_url_for(badge):
+    """Tür rozetini GFN kategori URL'ine eşle (yoksa None). Birleşik rozet ('Aksiyon-RPG',
+    'Indie - RPG') → parçalar sırayla denenir, ilk eşleşen kazanır. Eşleşme yoksa None (linklenmez)."""
+    if not badge:
+        return None
+    for c in [badge] + re.split(r"\s*[-–/]\s*", badge):
+        u = GFN_CATEGORY_URLS.get(_fold(c))
+        if u:
+            return u
+    return None
+
 # --- Card-Table: compact rows with text-like tags ---
 def render_card_table(title, games):
     """games: list of {name, badge, badge_color, meta, anchor (optional)}"""
@@ -461,7 +494,7 @@ def render_card_table(title, games):
             badge_html = f'<span class="gp-badge" style="display:inline-block;color:{color};background:{tint};border:1px solid {border};padding:3px 10px;border-radius:4px;font-size:0.62em;font-weight:800;letter-spacing:0.14em;white-space:nowrap;min-width:120px;text-align:center;text-transform:uppercase;">{g["badge"]}</span>'
         meta_html = ''
         if g.get('meta'):
-            meta_html = f'<div class="gp-meta" style="color:#8b95a7;font-size:0.78em;text-align:right;white-space:nowrap;font-weight:500;letter-spacing:0.01em;">{g["meta"]}</div>'
+            meta_html = f'<div class="gp-meta" style="color:#a8b2c0;font-size:0.78em;text-align:right;white-space:nowrap;font-weight:500;letter-spacing:0.01em;">{g["meta"]}</div>'
         name_html = f'<div class="gp-name" style="font-weight:600;color:#f3f4f6;font-size:0.98em;letter-spacing:-0.005em;transition:color 0.2s;">{g["name"]}</div>'
         # If anchor provided, make row a clickable anchor link
         if g.get('anchor'):
@@ -470,6 +503,9 @@ def render_card_table(title, games):
         else:
             row_tag = 'div'
             attrs = ''
+        # tür rozeti GFN kategorisine iç link — yalnızca satır kendisi link DEĞİLSE (iç içe <a> geçersiz)
+        if g.get('badge_href') and row_tag != 'a' and badge_html:
+            badge_html = f'<a href="{g["badge_href"]}" style="text-decoration:none;line-height:0;display:inline-flex;">{badge_html}</a>'
         rows.append(f'''  <{row_tag} class="card-row"{attrs} style="--row-c:{color};display:grid;grid-template-columns:140px 1fr auto;gap:14px;padding:8px 18px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background 0.2s ease;text-decoration:none;color:inherit;">
     {badge_html}
     {name_html}
@@ -489,15 +525,23 @@ def render_card_table(title, games):
 </div>
 '''
 
-# --- Game H3 with inline tag + studio metadata (matches card-table style) ---
-def render_game_h3_inline(anchor, name, badge, badge_color, meta_text):
+# --- Game heading (H2/H3/H4) with inline tag + studio metadata (matches card-table style) ---
+def render_game_h3_inline(anchor, name, badge, badge_color, meta_text, level="h3", badge_href=None):
+    """Oyun başlığı. level: birden fazla oyun anlatılıyorsa her oyuna eklenir (h2/h3/h4 — çevredeki seviyeye göre).
+    Başlık metnine RENK atanmaz (CMS başlık rengini zaten verir; yük azalır). badge_href verilirse tür rozeti
+    o GFN kategori sayfasına iç link olur (bkz. category_url_for + sayfa başına TEK link dedup kuralı)."""
     tint = hex_to_rgba(badge_color, 0.10)
     border = hex_to_rgba(badge_color, 0.30)
-    return f'''<h3 id="{anchor}" style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:32px 0 14px;font-size:1.18em;line-height:1.4;">
-  <span style="display:inline-block;color:{badge_color};background:{tint};border:1px solid {border};padding:3px 10px;border-radius:4px;font-size:0.5em;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;white-space:nowrap;">{badge}</span>
-  <span style="color:#fff;font-weight:700;letter-spacing:-0.01em;">{name}</span>
-  <span style="font-size:0.52em;color:#8b95a7;font-weight:500;letter-spacing:0.02em;flex-basis:100%;margin-top:-4px;">{meta_text}</span>
-</h3>'''
+    badge_html = (f'<span style="display:inline-block;color:{badge_color};background:{tint};border:1px solid {border};'
+                  f'padding:3px 10px;border-radius:4px;font-size:0.5em;font-weight:800;letter-spacing:0.14em;'
+                  f'text-transform:uppercase;white-space:nowrap;">{badge}</span>')
+    if badge_href:
+        badge_html = f'<a href="{badge_href}" style="text-decoration:none;line-height:0;display:inline-flex;">{badge_html}</a>'
+    return f'''<{level} id="{anchor}" style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:32px 0 14px;line-height:1.4;">
+  {badge_html}
+  <span style="font-weight:700;letter-spacing:-0.01em;">{name}</span>
+  <span style="font-size:0.52em;color:#a8b2c0;font-weight:500;letter-spacing:0.02em;flex-basis:100%;margin-top:-4px;">{meta_text}</span>
+</{level}>'''
 
 # --- Inline Game Card (small, premium, in game description section) ---
 def render_inline_game_card(name, badge, badge_color, meta_lines):
@@ -506,7 +550,7 @@ def render_inline_game_card(name, badge, badge_color, meta_lines):
     return f'''<aside class="gp-game-info-card" style="float:right;width:210px;margin:0 0 16px 22px;background:transparent;border:1px solid #1f1f1f;border-radius:10px;padding:16px;font-size:0.9em;box-shadow:0 4px 12px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.04);">
   <span style="display:inline-block;background:{badge_color};color:#fff;padding:4px 11px;border-radius:999px;font-size:0.62em;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.18),0 2px 4px rgba(0,0,0,0.4);">{badge}</span>
   <div style="font-weight:700;color:#fff;font-size:1.04em;line-height:1.3;margin-bottom:8px;letter-spacing:-0.01em;">{name}</div>
-  <div style="color:#8b95a7;font-size:0.82em;line-height:1.55;font-weight:500;">{meta_html}</div>
+  <div style="color:#a8b2c0;font-size:0.82em;line-height:1.55;font-weight:500;">{meta_html}</div>
 </aside>
 '''
 
@@ -517,7 +561,7 @@ def render_prev_weeks_cards(items):
         cards.append(f'''  <a href="{item["url"]}" class="gp-prev-week" style="display:block;text-decoration:none;background:transparent;border:1px solid rgba(255,255,255,0.05);border-radius:14px;padding:16px 18px;color:inherit;transition:border-color 0.25s,transform 0.25s,box-shadow 0.25s;">
     <div style="display:flex;align-items:center;font-size:0.58em;color:#76b900;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:10px;">{SVG_NEWS}GFN Thursday</div>
     <div style="font-weight:700;color:#fff;font-size:1.02em;margin-bottom:6px;letter-spacing:-0.01em;">{item["date"]}</div>
-    <div style="font-size:0.82em;color:#8b95a7;font-weight:500;line-height:1.5;">{item["label"]}</div>
+    <div style="font-size:0.82em;color:#a8b2c0;font-weight:500;line-height:1.5;">{item["label"]}</div>
   </a>''')
     return f'''<div class="prev-weeks-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:20px 0 28px;">
 {chr(10).join(cards)}

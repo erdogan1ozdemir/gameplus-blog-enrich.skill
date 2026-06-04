@@ -3,12 +3,15 @@
 Tüm görsel kurallar `scripts/gameplus_blog_components.py` içindeki `ANIMATED_BORDER_STYLE` ve render fonksiyonlarında hazır. Bu dosya neyin neden öyle olduğunu açıklar; değer değiştirmek istersen referans.
 
 ## Renk paleti
+> **Arka plan:** Site zaten siyah; **bloklara ekstra siyah arka plan BASMA** (bloklar `transparent`, siteyle kaynaşır). Sadece floating ToC gibi overlay'ler kendi zeminini taşır.
+> **Başlık rengi:** Doküman başlıklarına (H1/H2/H3/H4 ve oyun başlıkları) **renk ATAMA** — CMS başlık rengini zaten veriyor (yük azalır). Aşağıdaki #fff yalnızca önizleme (PAGE_HEAD) içindir.
+
 | Token | Hex | Kullanım |
 |---|---|---|
-| Arka plan | `#000` | Her blok (site koyu temalı) |
-| Gövde metni | `#cbd5e1` | Paragraf |
-| Başlık | `#fff` | H1/H2/H3 |
-| Soluk metin | `#8b95a7` / `#9ca3af` | meta, açıklama |
+| Arka plan | `transparent` | Bloklar (site zaten `#000`; ekstra siyah basma) |
+| Gövde metni | `#cbd5e1` | Paragraf (önizlemede #b2b2b2) |
+| Başlık | `#fff` *(yalnız önizleme)* | H1/H2/H3 — CMS verir, biz body'de atamayız |
+| Soluk metin | `#a8b2c0` | meta, açıklama (eski #8b95a7'ten bir tık beyaza yakın) |
 | GFN yeşili | `#76b900` | birincil aksan, butonlar |
 | Açık yeşil | `#a3e635` | link, hover |
 | Amber | `#f59e0b` | hatırlatma, fırsat |
@@ -17,6 +20,8 @@ Tüm görsel kurallar `scripts/gameplus_blog_components.py` içindeki `ANIMATED_
 | Editör mavi | `#3b82f6` / `#93c5fd` | editör notu |
 
 ### Tür (badge) renkleri — tutarlı taksonomi
+> **Tür adı:** Oyun GFN'deyse hangi GFN kategorisine giriyorsa onu yaz (Aksiyon, Macera, Canlandırma/RPG, Strateji, FPS, Platform, MMO, Yarış, Dövüş, Spor, Bağımsız/Indie, Bulmaca, Arcade, MOBA, Aile Dostu, Basit Eğlence, Simülasyon…). Birden fazla türe uyuyorsa birleşik (Aksiyon-Macera, Aksiyon-RPG, Indie-RPG). GFN'de yoksa uygun türü seç. Tür GFN kategorisine fit ediyorsa rozet o kategoriye iç link olur (content-rules 12). Renk eşlemesi:
+
 | Tür | Hex |
 |---|---|
 | KORKU (tüm survival/psikolojik/uzay korku) | `#dc2626` |

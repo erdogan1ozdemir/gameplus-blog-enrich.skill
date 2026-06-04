@@ -20,8 +20,8 @@ Sıra:
    body = re.sub(r'<ul><li><p>İlk Oyun Adı</p></li>.*?</ul>', '', body, count=1, flags=re.DOTALL)
    body = body.replace('<h3 id="ilk-oyun-slug">', card_table + '<h3 id="ilk-oyun-slug">', 1)
    ```
-6. **Her oyun H3'ü → inline format (ZORUNLU, her yazıda aynı):** düz `<h3 id="x">Oyun Adı</h3>`'ü `render_game_h3_inline(anchor, isim, "TÜR", renk, "Stüdyo · Yıl")` ile değiştir. **Tür etiketi + yapımcı stüdyo + çıkış yılı her oyunda bulunur** ve card-table satırındaki veriyle birebir aynıdır (badge=tür, meta="Stüdyo · Yıl"). Engine opsiyonel; asıl üçlü tür + stüdyo + yıl. Yeni duyurulan oyunda kesin yıl yoksa dönem yaz ("2027 (beklenen)", "Belirsiz", "Yayında"). Bkz. content-rules kural 11. **Aynı kural etkinlik özetleri (State of Play vb.) için de geçerli:** oradaki her oyun bölümünün başlığını da bu inline formata çevir.
-7. **CTA Oyunlar:** listenin ortasına/sonuna doğru bir oyun H3'ünden önce (örn. listenin ~2/3'ü).
+6. **Her oyun başlığı → inline format (ZORUNLU; yazıda BİRDEN FAZLA oyun varsa):** düz `<h2/h3/h4 id="x">Oyun Adı</…>`'ü `render_game_h3_inline(anchor, isim, "TÜR", renk, "Stüdyo · Yıl", level="h2|h3|h4", badge_href=…)` ile değiştir. **Başlık H2/H3/H4 olabilir** (çevredeki seviyeye uy). **Başlık metnine RENK atanmaz** (CMS verir). Tür + stüdyo + yıl her oyunda; card-table satırındaki veriyle birebir aynı. Yıl yoksa dönem ("2027 (beklenen)", "Belirsiz", "Yayında"). Tür GFN kategorisine fit ediyorsa rozet o kategoriye iç link (`badge_href`, sayfa başına TEK link — content-rules 11-12). Tek oyun anlatılıyorsa başlık şart değil. Etkinlik özetleri (State of Play) dahil.
+7. **CTA Oyunlar (OPSİYONEL):** listenin ~2/3'ünde bir oyun başlığından önce. **CTA sayısı 2-3'tür; her zaman 3 şart değil** — kısa/odaklı yazıda CTA Oyunlar atlanabilir (Paketler + dual End kalır).
 8. **İkinci tablo** (varsa, örn. "beklenen oyunlar"): ilgili giriş paragrafından sonra.
 9. **Editör notu 2 / Ubisoft CTA:** ilgili bölümden sonra (Ubisoft oyunu geçiyorsa Ubisoft CTA).
 10. **Hatırlatma (highlight):** lisans/GFN uyarısının olduğu paragraftan önce.
@@ -42,7 +42,8 @@ Farklar:
 7. **"Önceki Haftalarda Neler Oldu?" bölümü EN ALTTA** (End CTA'dan SONRA, yazının son bloğu olarak): H2 + giriş paragrafı + `render_prev_weeks_cards()` grid. Kart alt etiketi **"Haftanın haberlerini oku →"** tarzında olsun; oyun-spesifik ("o haftanın yeni oyunları") yazma.
 
 ## Genel kurallar
-- **Oyun giriş formatı HER YAZIDA AYNI:** Bir liste/bölümdeki her oyun **tür etiketi + Stüdyo · Yıl** taşır — başlıklarda `render_game_h3_inline`, card-table satırlarında badge=tür + meta="Stüdyo · Yıl", GFN tablolarında Tür/Stüdyo/Çıkış sütunları. Düz `<h3>Oyun Adı</h3>` bırakma. Detay: content-rules kural 11.
+- **Oyun giriş formatı HER YAZIDA AYNI (yazıda >1 oyun varsa):** her oyun **tür + Stüdyo · Yıl** taşır — başlıklarda `render_game_h3_inline` (H2/H3/H4, başlığa renk atama), card-table'da badge=tür + meta="Stüdyo · Yıl", GFN tablolarında Tür/Stüdyo/Çıkış. Tür GFN kategorisine fit ediyorsa rozet o kategoriye iç link (sayfa başına tek). Detay: content-rules 11-12.
+- **Özet (TLDR) madde sayısı:** 3-6 (duruma göre). **CTA sayısı:** 2-3 (Oyunlar opsiyonel). **Ekstra siyah arka plan basma** (site zaten siyah; bloklar transparent). **Başlık rengini CMS'e bırak.**
 - Style bloğu (`ANIMATED_BORDER_STYLE`) final gövdenin **en başına bir kez**.
 - Her `replace`/`sub` için `count=1` — yanlışlıkla çoklu enjeksiyon olmasın.
 - Enjeksiyondan sonra doğrula: `grep -c "card-row"`, badge sayısı, FAQ sayısı beklenenle uyuşmalı.
