@@ -20,7 +20,10 @@ Tüm görsel kurallar `scripts/gameplus_blog_components.py` içindeki `ANIMATED_
 | Editör mavi | `#3b82f6` / `#93c5fd` | editör notu |
 
 ### Tür (badge) renkleri — tutarlı taksonomi
-> **Tür adı:** Oyun GFN'deyse hangi GFN kategorisine giriyorsa onu yaz (Aksiyon, Macera, Canlandırma/RPG, Strateji, FPS, Platform, MMO, Yarış, Dövüş, Spor, Bağımsız/Indie, Bulmaca, Arcade, MOBA, Aile Dostu, Basit Eğlence, Simülasyon…). Birden fazla türe uyuyorsa birleşik (Aksiyon-Macera, Aksiyon-RPG, Indie-RPG). GFN'de yoksa uygun türü seç. Tür GFN kategorisine fit ediyorsa rozet o kategoriye iç link olur (content-rules 12). Renk eşlemesi:
+> **Tür adı:** Oyun GFN'deyse hangi GFN kategorisine giriyorsa onu yaz (Aksiyon, Macera, Canlandırma/RPG, Strateji, FPS, Platform, MMO, Yarış, Dövüş, Spor, Bağımsız/Indie, Bulmaca, Arcade, MOBA, Aile Dostu, Basit Eğlence, Simülasyon…). Birden fazla türe uyuyorsa birleşik (Aksiyon-Macera, Aksiyon-RPG, Indie-RPG). GFN'de yoksa uygun türü seç. Tür GFN kategorisine fit ediyorsa rozet o kategoriye iç link olur (content-rules 12).
+> **Rozet kontrastı (WCAG):** Aşağıdaki hex'ler rozetin **kenar + zemini** (tür rengi) içindir. Rozet **METNİ** bu rengin açık tonudur (`lighten(renk, 0.45)`) — koyu zeminde doygun renk metin kontrastı düşürüp Lighthouse/PageSpeed uyarısı verir; açık ton 7:1+ kontrast sağlar. Zemin tür rengi %16, kenar %45.
+
+Renk eşlemesi (kenar/zemin):
 
 | Tür | Hex |
 |---|---|

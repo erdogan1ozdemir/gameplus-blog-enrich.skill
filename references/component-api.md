@@ -25,7 +25,7 @@ from gameplus_blog_components import *
 Üst meta chip'i. Genel blog: `render_meta("Güncellenme: 2026")`. GFN: `render_meta("21 Mayıs 2026", "GAME+ Blog · GFN Thursday")`.
 
 ### `render_tldr(items)`
-`items` = HTML string listesi (**3-6 madde, duruma göre** — her zaman 4 şart değil). Her madde yeşil ✓ ile. V8 conic glow çerçeveli. Maddeleri `<strong>Etiket:</strong> açıklama` formatında ver.
+`items` = HTML string listesi (**3-6 madde, duruma göre** — her zaman 4 şart değil). Her madde yeşil ✓ ile. V8 conic glow çerçeveli. Maddeleri `<strong>Etiket:</strong> açıklama` formatında ver. **Başlık ("Hızlı Özet") `<h2>`'dir.**
 
 ### `render_info_card(badges, style="grid")`
 - `style="grid"` (genel blog): `badges` = `[(etiket, değer), ...]`. 4 metrik önerilir (İncelenen Remake / Beklenen / Öne Çıkan Stüdyo / Türler).
@@ -66,6 +66,7 @@ V9 layered + kompakt + Hover-Slide. `title` (trophy + gradient ile gösterilir).
  'badge_href': None}  # opsiyonel: rozet kategori linki — YALNIZCA anchor yoksa uygulanır (iç içe <a> olmaz)
 ```
 GFN'de `meta`'yı `linkify_platforms` ile platform-linkli ver, `anchor` koyma. Tür kategori linkini genelde **oyun başlığında** ver (card-row zaten jump-link).
+**Rozet kontrastı:** rozet METNİ `lighten(badge_color, 0.45)` ile açık tondur (doygun renk değil), koyu zeminde kontrast 7:1+ olur (Lighthouse/PageSpeed kontrast uyarısını giderir). Zemin (tür rengi %16) ve kenar (%45) hâlâ tür rengindedir; kimlik korunur. Aynı kural `render_game_h3_inline` rozetinde de uygulanır.
 
 ### `render_game_h3_inline(anchor, name, badge, badge_color, meta_text, level="h3", badge_href=None)`
 **ZORUNLU standart — yazıda >1 oyun varsa her oyun başlığı bu formatta** (genel blog listicle + State of Play gibi etkinlik özetleri). Düz `<h2/h3/h4>Oyun Adı</…>` bırakma.

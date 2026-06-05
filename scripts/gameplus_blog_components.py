@@ -258,7 +258,7 @@ def render_tldr(items):
     )
     return f'''<div class="tldr-block gp-conic" style="--gp-glow:#76b900;margin:22px 0;box-shadow:0 4px 20px rgba(0,0,0,0.5);">
   <div class="gp-conic-inner" style="padding:18px 22px;font-size:0.92em;">
-    <h3 style="margin:0 0 12px 0;font-size:1em;font-weight:800;letter-spacing:-0.005em;display:flex;align-items:center;color:#76b900;">{SVG_DOC}<span style="color:#fff;">Hızlı Özet</span></h3>
+    <h2 style="margin:0 0 12px 0;font-size:1em;font-weight:800;letter-spacing:-0.005em;display:flex;align-items:center;color:#76b900;">{SVG_DOC}<span style="color:#fff;">Hızlı Özet</span></h2>
     <ul style="margin:0;padding:0;color:#cbd5e1;list-style:none;">
 {items_html}
     </ul>
@@ -448,6 +448,16 @@ def hex_to_rgba(hex_color, alpha):
     r, g, b = int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
     return f'rgba({r},{g},{b},{alpha})'
 
+# --- Helper: rengi beyaza doğru karıştır (rozet METNİ için yüksek kontrast / WCAG AA-AAA) ---
+def lighten(hex_color, amt=0.45):
+    """Tür rozeti metni doygun renk yerine açık tonu kullanır; koyu rozet zemininde kontrast
+    4.5:1'in çok üzerine çıkar (Lighthouse/PageSpeed kontrast uyarısını giderir). Rozetin
+    kenarı + zemini hâlâ tür rengindedir, kimlik korunur. amt: 0=aynı, 1=beyaz."""
+    h = hex_color.lstrip('#')
+    r, g, b = int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+    r = round(r + (255 - r) * amt); g = round(g + (255 - g) * amt); b = round(b + (255 - b) * amt)
+    return '#%02x%02x%02x' % (r, g, b)
+
 # --- Tür rozeti -> GFN kategori sayfası (iç link) ---
 # Yalnızca markanın linklenebilir dediği kategoriler. Tür rozeti bunlardan birine fit ediyorsa
 # rozet o kategoriye iç link olur. SAYFA BAŞINA HER KATEGORİYE EN FAZLA 1 LİNK (dedup build script'te).
@@ -487,11 +497,12 @@ def render_card_table(title, games):
     rows = []
     for g in games:
         color = g.get("badge_color", "#76b900")
-        tint = hex_to_rgba(color, 0.10)
-        border = hex_to_rgba(color, 0.30)
+        tint = hex_to_rgba(color, 0.16)
+        border = hex_to_rgba(color, 0.45)
+        badge_text = lighten(color, 0.45)  # WCAG kontrast: doygun renk yerine açık ton metin
         badge_html = ''
         if g.get('badge'):
-            badge_html = f'<span class="gp-badge" style="display:inline-block;color:{color};background:{tint};border:1px solid {border};padding:3px 10px;border-radius:4px;font-size:0.62em;font-weight:800;letter-spacing:0.14em;white-space:nowrap;min-width:120px;text-align:center;text-transform:uppercase;">{g["badge"]}</span>'
+            badge_html = f'<span class="gp-badge" style="display:inline-block;color:{badge_text};background:{tint};border:1px solid {border};padding:3px 10px;border-radius:4px;font-size:0.62em;font-weight:800;letter-spacing:0.14em;white-space:nowrap;min-width:120px;text-align:center;text-transform:uppercase;">{g["badge"]}</span>'
         meta_html = ''
         if g.get('meta'):
             meta_html = f'<div class="gp-meta" style="color:#a8b2c0;font-size:0.78em;text-align:right;white-space:nowrap;font-weight:500;letter-spacing:0.01em;">{g["meta"]}</div>'
@@ -530,9 +541,10 @@ def render_game_h3_inline(anchor, name, badge, badge_color, meta_text, level="h3
     """Oyun başlığı. level: birden fazla oyun anlatılıyorsa her oyuna eklenir (h2/h3/h4 — çevredeki seviyeye göre).
     Başlık metnine RENK atanmaz (CMS başlık rengini zaten verir; yük azalır). badge_href verilirse tür rozeti
     o GFN kategori sayfasına iç link olur (bkz. category_url_for + sayfa başına TEK link dedup kuralı)."""
-    tint = hex_to_rgba(badge_color, 0.10)
-    border = hex_to_rgba(badge_color, 0.30)
-    badge_html = (f'<span style="display:inline-block;color:{badge_color};background:{tint};border:1px solid {border};'
+    tint = hex_to_rgba(badge_color, 0.16)
+    border = hex_to_rgba(badge_color, 0.45)
+    badge_text = lighten(badge_color, 0.45)  # WCAG kontrast: açık ton metin
+    badge_html = (f'<span style="display:inline-block;color:{badge_text};background:{tint};border:1px solid {border};'
                   f'padding:3px 10px;border-radius:4px;font-size:0.5em;font-weight:800;letter-spacing:0.14em;'
                   f'text-transform:uppercase;white-space:nowrap;">{badge}</span>')
     if badge_href:
