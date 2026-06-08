@@ -459,8 +459,10 @@ def lighten(hex_color, amt=0.45):
     return '#%02x%02x%02x' % (r, g, b)
 
 # --- Tür rozeti -> GFN kategori sayfası (iç link) ---
-# Yalnızca markanın linklenebilir dediği kategoriler. Tür rozeti bunlardan birine fit ediyorsa
-# rozet o kategoriye iç link olur. SAYFA BAŞINA HER KATEGORİYE EN FAZLA 1 LİNK (dedup build script'te).
+# Yalnızca markanın linklenebilir dediği kategoriler. SADECE tek/saf rozet linklenir; birleşik/çift
+# rozetler (ayraçlı: 'Aksiyon-RPG', 'Aksiyon-Macera', 'Indie - RPG') temiz bir kategori karşılığı
+# olmadığından LİNKLENMEZ. Aynı yazıda eşleşen HER rozet linklenir (DEDUP YOK) — yalnızca oyun
+# başlıklarındaki rozetlerde; card-table indeksi/master tabloda kategori linki verilmez.
 _GFN = "https://gameplus.com.tr/gfn/oyunlar/"
 GFN_CATEGORY_URLS = {
     "STRATEJI": _GFN + "strateji", "AKSIYON": _GFN + "aksiyon", "SIMULASYON": _GFN + "simulasyon",
@@ -481,15 +483,15 @@ def _fold(s):
     return s
 
 def category_url_for(badge):
-    """Tür rozetini GFN kategori URL'ine eşle (yoksa None). Birleşik rozet ('Aksiyon-RPG',
-    'Indie - RPG') → parçalar sırayla denenir, ilk eşleşen kazanır. Eşleşme yoksa None (linklenmez)."""
+    """Tür rozetini GFN kategori URL'ine eşle (yoksa None). YALNIZCA tek/saf rozet linklenir.
+    Birleşik/çift rozetler — ayraçlı yazılanlar ('Aksiyon-RPG', 'Aksiyon-Macera', 'Indie - RPG') —
+    temiz bir kategori karşılığı olmadığından LİNKLENMEZ (tür tutarlılığı). Çok kelimeli tekil
+    kategoriler (örn. 'Dövüş Oyunu', 'Aile Dostu') boşlukla yazıldığı için bundan etkilenmez."""
     if not badge:
         return None
-    for c in [badge] + re.split(r"\s*[-–/]\s*", badge):
-        u = GFN_CATEGORY_URLS.get(_fold(c))
-        if u:
-            return u
-    return None
+    if re.search(r"[-–/]", badge):   # birleşik/çift tag (ayraçlı) -> link yok
+        return None
+    return GFN_CATEGORY_URLS.get(_fold(badge))
 
 # --- Card-Table: compact rows with text-like tags ---
 def render_card_table(title, games):
@@ -545,10 +547,13 @@ def render_game_h3_inline(anchor, name, badge, badge_color, meta_text, level="h3
     border = hex_to_rgba(badge_color, 0.45)
     badge_text = lighten(badge_color, 0.45)  # WCAG kontrast: açık ton metin
     badge_html = (f'<span style="display:inline-block;color:{badge_text};background:{tint};border:1px solid {border};'
-                  f'padding:3px 10px;border-radius:4px;font-size:0.5em;font-weight:800;letter-spacing:0.14em;'
+                  f'padding:3px 10px;border-radius:4px;font-size:0.5em;line-height:1.4;font-weight:800;letter-spacing:0.14em;'
                   f'text-transform:uppercase;white-space:nowrap;">{badge}</span>')
     if badge_href:
-        badge_html = f'<a href="{badge_href}" style="text-decoration:none;line-height:0;display:inline-flex;">{badge_html}</a>'
+        # display:contents -> the anchor generates NO box; the badge span lays out as a direct flex
+        # child of the heading, byte-identical to the unlinked case (same height, same 12px gap).
+        # (Earlier inline-flex/line-height:0 collapsed linked badges to ~8px tall.)
+        badge_html = f'<a href="{badge_href}" style="text-decoration:none;display:contents;">{badge_html}</a>'
     return f'''<{level} id="{anchor}" style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:32px 0 14px;line-height:1.4;">
   {badge_html}
   <span style="font-weight:700;letter-spacing:-0.01em;">{name}</span>

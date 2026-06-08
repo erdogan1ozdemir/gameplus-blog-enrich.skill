@@ -73,11 +73,11 @@ GFN'de `meta`'yı `linkify_platforms` ile platform-linkli ver, `anchor` koyma. T
 - **`level`** = `"h2" | "h3" | "h4"` — çevredeki başlık seviyesine uy.
 - Çıktı: `[TÜR] Oyun Adı` + altında `meta_text`. **`meta_text` = "Stüdyo · Yıl"** (ör. `Capcom · 2019`; engine opsiyonel: `Capcom · 2019 · RE Engine`).
 - **Başlık metnine RENK atanmaz** (CMS başlık rengini verir; yük azalır). Rozet kendi tür rengini, meta soluk rengi taşır.
-- **`badge_href`** verilirse tür rozeti o GFN kategori sayfasına iç link olur. URL'i `category_url_for(badge)` bulur; sayfa başına TEK link için build script `seen` ile dedup yapar (content-rules kural 12).
+- **`badge_href`** verilirse tür rozeti o GFN kategori sayfasına iç link olur (`<a display:contents>` ile sarılır; linksiz rozetle birebir aynı yükseklik). URL'i `category_url_for(badge)` bulur — yalnızca tek/saf rozet eşleşir, birleşik rozet `None` döner. **Dedup YOK:** aynı yazıda eşleşen her rozet linklenir; build script artık `seen` kümesi tutmaz, doğrudan `category_url_for(badge)` sonucunu geçer (content-rules kural 12).
 - Card-table satırıyla (badge=tür, meta="Stüdyo · Yıl") birebir aynı veri.
 
 ### `category_url_for(badge)` + `GFN_CATEGORY_URLS`
-`badge` (ör. "Aksiyon", "Aksiyon-RPG") markanın linklenebilir GFN kategorilerinden birine fit ediyorsa kategori URL'ini döndürür, yoksa `None`. Birleşik rozette ilk eşleşen parça kazanır. Türkçe/case duyarsız. Linklenebilir set: strateji, aksiyon, simulasyon, dovus-oyunu, yaris, fps, mmo, macera, steam, canlandirma, moba, bagimsiz, arcade, bulmaca, basit-eglence, aile-dostu, platform, spor, ubisoft-connect, populer-oyunlar.
+`badge` (ör. "Aksiyon") markanın linklenebilir GFN kategorilerinden birine **tam/saf** fit ediyorsa kategori URL'ini döndürür, yoksa `None`. **Birleşik/çift rozet (ayraçlı: "Aksiyon-RPG", "Aksiyon-Macera", "Indie-RPG") → `None`** (linklenmez); ayraç içeren rozet otomatik elenir. Çok kelimeli tekil kategoriler boşlukla yazıldığından ("Dövüş Oyunu", "Aile Dostu") eşleşir. Türkçe/case duyarsız. Linklenebilir set: strateji, aksiyon, simulasyon, dovus-oyunu, yaris, fps, mmo, macera, steam, canlandirma, moba, bagimsiz, arcade, bulmaca, basit-eglence, aile-dostu, platform, spor, ubisoft-connect, populer-oyunlar.
 
 ### `render_prev_weeks_cards(items)`
 **Sadece GFN.** Soft-border kart grid. `items` = `[{'url':..., 'date':'14 Mayıs 2026', 'label':'...'}, ...]`.
