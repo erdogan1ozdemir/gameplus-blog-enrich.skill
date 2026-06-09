@@ -484,6 +484,11 @@ def inject_heading_ids(html):
     new_html = re.sub(r'<(h[23])>(.*?)</\1>', replace_h, html, flags=re.DOTALL)
     return new_html, toc_items
 
+def demote_h1(html):
+    """Blog gövdesi H1 İÇERMEZ — CMS yazı başlığını zaten H1 basar (başlık ayrı iletilir).
+    Gövdedeki H1 -> H2 (build'in EN SON adımı, ToC '</h1>' çapasıyla enjekte edildikten sonra)."""
+    return re.sub(r'<h1(\b[^>]*)>(.*?)</h1>', r'<h2\1>\2</h2>', html, flags=re.DOTALL | re.IGNORECASE)
+
 # === REMAKE GAME DATA ===
 remake_games_data = {
     'resident-evil-2-remake': {'badge': 'SURVIVAL HORROR', 'badge_color': '#dc2626', 'meta_lines': ['Capcom · 2019', 'RE Engine']},
@@ -704,6 +709,7 @@ if faq_idx != -1:
 remake_clean = remake_clean.replace(faq_h2, remake_end_cta + faq_h2, 1)
 
 # Prepend animated border styles
+remake_clean = demote_h1(remake_clean)  # gövde H1 içermez (CMS yazı başlığını zaten H1 basar)
 remake_final_body = ANIMATED_BORDER_STYLE + remake_clean
 
 # Write body-only version
@@ -787,6 +793,7 @@ gfn_clean = re.sub(
 gfn_clean = gfn_clean.replace('<h2 id="geforce-now-thursday-de-onceki-haftalarda-neler-oldu">',
     gfn_highlight + gfn_end_cta + '<h2 id="geforce-now-thursday-de-onceki-haftalarda-neler-oldu">', 1)
 
+gfn_clean = demote_h1(gfn_clean)  # gövde H1 içermez (CMS yazı başlığını zaten H1 basar)
 gfn_final_body = ANIMATED_BORDER_STYLE + gfn_clean
 (OUT_DIR / 'ornek-blog-gfn-thursday-v9-body-only.html').write_text(gfn_final_body, encoding='utf-8')
 gfn_full = PAGE_HEAD.replace("__TITLE__", "GFN Thursday 21 Mayıs - Game+ Blog - V3") + gfn_final_body + PAGE_FOOT

@@ -30,8 +30,10 @@ Sıra:
 
 ## GFN Thursday (haftalık derleme)
 
+> **0. Embargo (EN) draft'ı geldiyse ÖNCE YERELLEŞTİR** (`references/gfn-localization.md`): canlı dil (4 Haziran dışı yazıların tonu), kelime oyunlarını doğal/anlamlı Türkçeyle (çiğ kalıyorsa zorlama), çıkış tarihi formatı **"[Platform] çıkış tarihi: [TR tarih]"**, iç linkler (/gfn, /gfn/paketler, /gfn/oyunlar, /ubisoft, tür kategori, ilgili /blog), öne çıkan oyunlara **YouTube fragmanı** (bulunmazsa kullanıcıdan iste), öne çıkan oyun bölümünde **italik tagline** (embed'in hemen altında). SONRA aşağıdaki enrichment'ı uygula. **Teslim:** tek `.docx` = yerelleştirilmiş metin + `HTML Versiyon` (enriched HTML) + `files-preview` + Excel.
+
 Farklar:
-1. **H1'den sonra:** `toc + tldr + info-card` — **meta header YOK** (render_meta ekleme; CMS kategori + tarihi zaten gösterir). **TLDR ve info-card GFN'de de ZORUNLU.** GFN info-card 4 metrik; metrikler yazının ritmine göre değişir:
+1. **H1'den sonra (enjeksiyon çapası):** `toc + tldr + info-card` enjekte edilir; **meta header YOK** (render_meta ekleme; CMS kategori + tarihi zaten gösterir). **Gövde H1 İÇERMEZ** — build en SON adımda `demote_h1(body)` ile başlık H1'ini H2'ye çevirir (CMS yazı başlığını zaten H1 basar; başlık ayrı iletilir — content-rules 7). **TLDR ve info-card GFN'de de ZORUNLU.** GFN info-card 4 metrik; metrikler yazının ritmine göre değişir:
    - **Aylık / ay başı yazısı:** "Bu Ay Eklenen: N Oyun" (ayın toplamı), "Ayın/Haftanın Öne Çıkanı", "Öne Çıkan Dönüş", "Platformlar" (Steam · Epic · Xbox).
    - **Haftalık yazı:** "Bu Ay Eklenen oyun sayısı" metriğini ZORLAMA — her hafta yeni oyun eklenmeyebilir (bazı haftalar yeni oyun yerine DLC / yeni sezon / güncelleme gelir ya da katalogdan kalkan bir oyun geri döner). **"Bu Hafta Eklenen: 0" gibi olumsuz/boş değer gösterme;** metrikleri o haftanın gerçek içeriğine göre seç (örn. "Bu Hafta Eklenen" yalnızca gerçekten yeni oyun varsa, "Haftanın Öne Çıkanı", "Öne Çıkan Güncelleme/DLC/Sezon", "Geri Dönen Oyun", "Platformlar"). Ayrıntı: `content-rules.md` kural 10.
 2. **Compact CTA (Controller-Tag):** haftanın öne çıkan oyununun bölümünden hemen sonra / 2. H2'den önce. Tek öne çıkan oyun için.

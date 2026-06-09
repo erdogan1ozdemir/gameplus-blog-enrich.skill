@@ -13,6 +13,7 @@ Bu tasarım, Gameplus ekibiyle çok turlu revizyonla oturmuş son haldir (v9). T
 
 - Kullanıcı bir veya birden fazla **blog yazısını** (.docx / .html / .md / yapıştırılmış metin) iletip "zenginleştir / formatla / HTML yap / CTA-TLDR-FAQ ekle" derse
 - "GFN Thursday" haftalık oyun derlemesi iletildiğinde
+- **NVIDIA'nın İngilizce embargo draft'ı** (`Embargoed_*ThisWeekOnGFN_*.docx`) iletildiğinde → önce TR'ye yerelleştir, sonra enrich et (bkz. `references/gfn-localization.md`)
 - "En iyi X oyunlar", "X nedir", rehber/listicle tarzı blog taslağı iletildiğinde
 - Blog docx'leri CMS'e hazırlanmak istendiğinde
 
@@ -38,11 +39,12 @@ Detaylı yerleşim kuralları: **`references/placement-rules.md`**.
 
 ### 1. Taslağı oku ve yapıyı çıkar
 - `.docx` ise: `python3 -c "from docx import Document; ..."` veya `references/docx-extract.md`'deki yöntemle paragraf/başlık/liste/link yapısını çıkar. YouTube embed'leri ve `<iframe>`'leri **olduğu gibi koru**.
+- **İngilizce embargo GFN draft'ı ise** (`Embargoed_*ThisWeekOnGFN_*`): önce `references/gfn-localization.md`'ye göre **TR'ye yerelleştir** (canlı dil; kelime oyunları doğal; çıkış tarihi formatı; iç linkler; öne çıkan oyunlara YouTube fragmanı), sonra bu workflow'la enrich et. Teslim: doc (yerelleştirilmiş metin + `HTML Versiyon`).
 - Başlıkları (H2/H3), paragrafları, listeleri, linkleri, görsel/video embed'lerini belirle.
 - Blog tipini tespit et (GFN Thursday mı, genel blog mu).
 
 ### 2. Orijinal HTML gövdesini hazırla
-- Yazarın metnini HTML'e çevir (H1/H2/H3, `<p>`, `<ul>`, `<a>`, embed'ler). **Cümleleri değiştirme.**
+- Yazarın metnini HTML'e çevir (H2/H3/H4, `<p>`, `<ul>`, `<a>`, embed'ler). **Cümleleri değiştirme.** **Gövdeye H1 EKLEME** — CMS yazı başlığını zaten H1 olarak basar (başlık ayrı iletilir); taslakta H1 varsa build sonunda `demote_h1` ile H2'ye çevrilir.
 - `inject_heading_ids(html)` ile her H2/H3'e `id` ekle ve ToC öğelerini topla.
 - `shrink_youtube_embeds(html)` ile embed'leri `.gp-yt-wrap` (max 720px, ortalı) yap.
 
@@ -69,7 +71,7 @@ faq    = render_faq_accordion([(soru, cevap), ...])
 
 ### 4. Yerleştir (placement)
 `references/placement-rules.md`'deki kurallara göre bileşenleri orijinal gövdeye `str.replace` / `re.sub` ile enjekte et. Özet:
-- Meta + ToC + TLDR + (info-card) → H1'den hemen sonra
+- Meta + ToC + TLDR + (info-card) → (taslak) H1'den hemen sonra enjekte edilir; **build EN SON adımda `demote_h1(body)` ile başlığı H1→H2 yapar (gövde H1 İÇERMEZ; CMS başlığı zaten H1)**
 - Karşılaştırma tablosu → ilgili kavram paragrafından sonra
 - **CTA Paketler** → 2. H2'den önce
 - **Card-table** → listicle'ın yerine, ilk oyun H3'ünden ÖNCE (genel blog); GFN'de oyun listesi yerine
@@ -114,6 +116,8 @@ Tam liste **`references/content-rules.md`**'de. En kritikleri:
 - **Lisans hatırlatması:** GFN oyun satmaz, sadece çalıştırır; oyunun ilgili platformda (Steam/Xbox/Epic) lisansına sahip olmak gerekir.
 - **GFN Thursday'de tek CTA** yeterli (Paketler + Oyunlar yönlendirmesi). İki ayrı blok koyma.
 - Em dash (—) kullanma; nokta veya virgülle böl.
+- **Gövdeye H1 EKLEME** — CMS yazı başlığını zaten H1 basar (başlık ayrı iletilir). Gövdede H1 varsa H2'ye çevir (`demote_h1`, build'in son adımı). Çift H1 SEO sorunudur.
+- **GFN embargo yerelleştirmesinde** (İngilizce→TR; enrichment'tan farklı olarak burada metin çevrilir): kelime oyunlarını/deyimleri **doğal ve anlamlı** Türkçeyle ver; birebir oturmuyor ve çiğ kalıyorsa ZORLAMA, espriyi/tonu taşıyan temiz bir ifadeyle değiştir (ör. "license to stream" zorlaması yerine doğal bir cümle). Mekanik/tarih/teknik bilgi birebir korunur. Detay: `references/gfn-localization.md`.
 - Görsel alt text / caption / şema markup EKLEME (kullanıcı istemiyor).
 - YouTube embed'leri ve mevcut linkleri koru.
 
@@ -135,6 +139,7 @@ Tam liste **`references/content-rules.md`**'de. En kritikleri:
 - `references/content-rules.md` — dürüstlük, kopya, taksonomi, yasak öğeler
 - `references/component-api.md` — her `render_*` fonksiyonunun imzası, parametreleri, örnek çağrı
 - `references/docx-extract.md` — .docx'ten yapı çıkarma yöntemi
+- `references/gfn-localization.md` — **GFN embargo (EN) → TR yerelleştirme** kuralları (canlı dil, kelime oyunu doğallığı, çıkış tarihi formatı, iç linkler, YouTube, önceki haftalar, teslim doc + `HTML Versiyon`)
 - `examples/` — v9 referans çıktıları (remake + gfn-thursday) ve `build-script-reference.py` (tam assembly örneği)
 
 Yeni bir blog geldiğinde **`examples/build-script-reference.py`**'i şablon al, içeriğe göre verileri değiştir.

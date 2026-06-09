@@ -647,6 +647,14 @@ def inject_heading_ids(html):
     return new_html, toc_items
 
 
+def demote_h1(html):
+    """Blog gövdesi H1 İÇERMEZ — yazı başlığı CMS'e AYRI iletilir ve CMS onu zaten H1 olarak basar.
+    Gövdede H1 varsa H2'ye çevrilir (sayfada çift H1 / SEO sorunu olmasın); gövdeye yeni H1 EKLENMEZ.
+    Build akışında en SON adımda çağır (ToC '</h1>' çapasıyla enjekte edildikten sonra; bu fonksiyon
+    enjekte edilen ToC/TLDR/info'yu olduğu yerde bırakır, yalnız başlık etiketini h1->h2 yapar)."""
+    return re.sub(r'<h1(\b[^>]*)>(.*?)</h1>', r'<h2\1>\2</h2>', html, flags=re.DOTALL | re.IGNORECASE)
+
+
 # --- YouTube embed shrink (720px max, centered) ---
 def shrink_youtube_embeds(html):
     """Add .gp-yt-wrap class to existing embed divs (CSS caps width to 720px and centers)."""

@@ -15,7 +15,8 @@ from gameplus_blog_components import *
 ## Yardımcılar
 - `slugify(text)` → URL-safe slug (Türkçe karakterleri çevirir).
 - `hex_to_rgba(hex, alpha)` → tint/border renkleri için.
-- `inject_heading_ids(html)` → `(yeni_html, toc_items)`. Her `<h2>/<h3>`'e `id` ekler; `toc_items` = `[(level, text, anchor), ...]`.
+- `inject_heading_ids(html)` → `(yeni_html, toc_items)`. Her `<h2>/<h3>`'e `id` ekler; `toc_items` = `[(level, text, anchor), ...]`. (H1'e dokunmaz → başlık ToC'ye girmez.)
+- `demote_h1(html)` → gövdedeki her `<h1>…</h1>`'i `<h2>…</h2>` yapar. **Blog gövdesi H1 İÇERMEZ** (CMS yazı başlığını zaten H1 basar; başlık ayrı iletilir). Build akışının EN SON adımında çağrılır (ToC `</h1>` çapasıyla enjekte edildikten sonra); enjekte edilen ToC/TLDR/info olduğu yerde kalır.
 - `shrink_youtube_embeds(html)` → embed div'lerine `.gp-yt-wrap` ekler (max 720px, ortalı).
 - `linkify_platforms(meta_text, game_name)` → meta string'indeki Steam/Xbox/Epic/Game Pass kelimelerini arama linkine çevirir + ↗ ikon. (GFN card-table meta'sı için.)
 

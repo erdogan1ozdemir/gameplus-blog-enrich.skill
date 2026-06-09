@@ -36,6 +36,7 @@ GeForce NOW oyun SATMAZ, sadece bulutta ÇALIŞTIRIR. Oynamak için oyunun ilgil
 - Tarih/breadcrumb gibi alanları yazıya ekleme (CMS otomatik ekliyor). Sadece meta chip'te "Güncellenme: YIL" veya GFN tarihi olur.
 
 ## 7. EKLENMEYECEKLER
+- **Gövdeye H1 başlık EKLEME.** Blog CMS'i yazı başlığını zaten H1 olarak basar (başlık ayrı iletilir); gövdede ikinci bir H1 çift-H1/SEO sorunudur. Taslakta H1 varsa **H2'ye çevir** — `demote_h1(body)` (build akışının EN SON adımı, ToC `</h1>` çapasıyla enjekte edildikten sonra). ToC yalnız h2/h3'ten beslendiği için başlık H2'si ToC'ye girmez. (Başlığın gövdede hiç görünmemesini istiyorsan H2'yi de kaldırabilirsin; varsayılan: H2'ye çevir.)
 - Görsel alt text, caption, figure açıklaması **EKLEME**.
 - Schema markup / JSON-LD **EKLEME**.
 - Bariz/gereksiz info-card alanları koyma (örn. "Yayın Tarihi / Kategori"; bunlar CMS'te zaten belli). GFN'de info-card VAR (4 metrik), ama metrikleri yazının türüne göre seç (bkz. kural 10).
