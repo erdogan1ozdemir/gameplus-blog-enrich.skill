@@ -26,6 +26,14 @@ enrich" iletildiğinde. (Zaten TR olan bir GFN docx gelirse yerelleştirme adım
   Coşkusu, 27 Mart) — bunların akıcı, esprili dili. 4 Haziran'ın düz/birebir çeviri dilini KULLANMA.
 - "sen" hitabı, retorik kancalar ("Peki, sen hazır mısın?", "Bitti mi? Tabii ki bitmedi!"). Yazı içinde
   siz/sen **tutarlı** olsun (varsayılan: sen).
+- **Canlı AMA kaynağa sadık — abartma.** Esprili ton iyi; fakat kaynakta olmayan alakasız süsleme/metafor
+  UYDURMA. ❌ "gear up, grab a controller" → "kemerleri bağla, kolunu kap" (eklenti); ✅ "hazırlan, oyun
+  cihazını al" (sade ve sadık). Flourish kullanacaksan **temaya/oyuna bağlı** olsun, rastgele değil.
+- **İkinci tekil şahısla içine kat.** Betimsel kaynak cümlesini uygun yerde "sen" diline çevir.
+  ❌ "follows a group of pioneers" → "bir grup öncüyü konu alıyor" (pasif/betimsel);
+  ✅ "bir öncü grubuna liderlik edeceksin".
+- **Doğru kelime seçimi.** "looks sharper" → "daha net / detaylı görünüyor" (görsel için "keskin" DEĞİL);
+  precise terimleri koru ("illustration" → "illüstrasyon", "çizim" değil).
 
 ### Kelime oyunu / deyim — DOĞAL yerelleştir (KRİTİK KURAL)
 - İngilizce kelime oyunlarını, deyimleri, kültürel göndermeleri **Türkçede DOĞAL ve ANLAMLI**
@@ -36,14 +44,34 @@ enrich" iletildiğinde. (Zaten TR olan bir GFN docx gelirse yerelleştirme adım
   'akış yapmaya'!" (çiğ, anlamsız, çeviri kokuyor).
 - ✅ **Yap:** "Çalkalanmış ama karıştırılmamış, tam kıvamında bir ajan heyecanı seni bekliyor."
   (Bond martini esprisini taşır, doğal biter, "lisans" zorlamasını bırakır.)
-- Diğer örnekler: "It's hammer time." → "Demir Tavında Dövülür!"; "He's back." → "O geri döndü!";
-  "No joke" (1 Nisan göndermesi) → "Şaka yok!"; "Press Start on April" → "Nisan'a Başla Tuşuna Bas!".
+- Diğer örnekler: "It's hammer time." → "Demir Tavında Dövülür!"; "He's back." → "O geri döndü!".
+- **Zorlama-pun'a gitme — sade/temiz daha iyi olabilir** (markanın 2 Nisan yazısı bunu gösterdi):
+  "Press Start on April" → ✅ **"Nisan Başlıyor!"** (sade), ❌ "Nisan'a Başla Tuşuna Bas!" (oyun-kumandası
+  zorlaması); "No joke" (1 Nisan) → "Şaka yok!" da olur ama marka göndermeyi tamamen **sadeleştirdi**
+  ("vakit kaybetmeden oyunlara dalıyoruz"). Kültürel/tarih göndermesini Türk okura anlamsızsa bırak.
 - **Anlam ASLA bozulmaz:** oyun mekanikleri, çıkış tarihleri, donanım/teknik bilgiler, üyelik
   (Ultimate/Performance) detayları **birebir** korunur. Uydurma yok.
+
+### Yaygın/yerleşik terimleri ÇEVİRME (Türkçede orijinal hâliyle kullanılır)
+- Oyuncu kitlesinin Türkçe konuşurken İngilizce söylediği **yerleşik kısaltma/terimleri ÇEVİRME, olduğu
+  gibi bırak:** **3D** (❌ 3B), **RPG** (❌ rol yapma oyunu), **FPS**, **RTS**, **MMO**, **MMORPG**, **MOBA**,
+  **co-op**, **DLC**, **remaster / remake**, **indie**, **roguelike / soulslike**, **battle royale**,
+  **hack and slash**, **PvP / PvE**, **HDR**, **RTX / DLSS**, **fps** (kare/saniye).
+- ⚠️ AMA betimsel **tür kelimeleri çevrilir:** strategy → strateji, adventure → macera, racing → yarış,
+  open world → açık dünya, survival → hayatta kalma, puzzle → bulmaca, shooter → nişancı, fighting → dövüş.
+  Kural yalnızca **yerleşik kısaltma/terimler** (3D, RPG, FPS…) için; genel İngilizce kelimeler çevrilir.
+- ✅ "tam teşekküllü bir **3D** gerçek zamanlı strateji **RPG**" — ❌ "**3B** … **rol yapma oyunu**".
+- Şüphedeysen: bu terimi Türk oyuncular günlük konuşmada İngilizce mi söylüyor? Evetse koru.
+- (Referans: yayınlanan **2 Nisan 2026** yazısı — "3D", "RPG", "illüstrasyon" korunmuş.)
 
 ### Başlık & bölüm başlıkları & tagline
 - **Başlık (H1):** yaratıcı TR; oyun adları korunur; enerjik. Birebir çeviri değil (ör. "Time to Slay:
   'DOOM…'" → "İblis Kasaplığı Vakti Geldi: 'DOOM…' GeForce NOW'da!").
+- **Başlık stratejisi:** Başlık ya **(a) haftanın yıldız oyununu** (markanın sık deseni: "Forza Horizon 6
+  GeForce NOW'da Gaza Basıyor"), ya **(b) doğal/temalı bir kancayı** kullanır. İngilizce oyun-kalıplarını
+  ("Press Start", "Game On", "Level Up") **BİREBİR ÇEVİRME** — "Başla Tuşuna Bas" gibi çiğ, emir-kipi
+  talimatlar çeviri kokar. Ya **deyimsel karşılığını** bul ("Press Start" → **"Oyunlar Başlasın!"**), ya da
+  o oyunu bırakıp sade/temalı başlık yaz (marka 2 Nisan'da "Nisan Başlıyor: …" demeyi seçti).
 - **Alt başlık:** H1'in altında **italik tek satır** giriş.
 - **Bölüm başlıkları (H2):** yaratıcı TR (ör. "Stand and Fight" → "Direniş Başlasın, Düşman Titresin!";
   "Command the Frontier" → "Sınır Boylarını Geri Kazan!").
@@ -76,8 +104,12 @@ enrich" iletildiğinde. (Zaten TR olan bir GFN docx gelirse yerelleştirme adım
   "GAME+ kütüphanesi".
 - Embargo metni "premium / Ultimate and Performance members" → "Ultimate ve Performance üyeleri".
 
-### Dürüstlük
+### Dürüstlük / lisans
 - "tüm oyunlara erişebilirsin" DEME → "sahip olduğun / kütüphanendeki oyunlar".
+- **Lisans/sahiplik hatırlatması yazıda BULUNSUN** — woven bir cümle (prose) veya `render_highlight`
+  callout olarak: GFN oyun satmaz; oynamak için ilgili platformda (Steam/Xbox/Epic) **oyuna sahip olman
+  gerekir**. (Referans: 2 Nisan yazısı Mega Man bölümüne "…gecikmesiz oyun keyfinin tadını çıkarmak için
+  oyunlara sahip olman gerektiğini de unutma" cümlesini eklemiş.)
 
 ## YouTube fragmanları
 - **Yalnız öne çıkan oyunlara** (kendi H2 bölümü olanlara) 16:9 embed. DataForSEO YouTube kapalı →
