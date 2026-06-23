@@ -93,8 +93,8 @@ enrich" iletildiğinde. (Zaten TR olan bir GFN docx gelirse yerelleştirme adım
 - Uygun yerlere ekle: `/gfn`, `/gfn/paketler` (Ultimate/Performance), `/gfn/oyunlar` (kütüphane),
   `/ubisoft` (Ubisoft+/Warcraft/King's Quest gibi Ubisoft başlıkları).
 - **Tür kategori linkleri** (prose içinde, doğal): tek/saf tür GFN kategorisine fit ediyorsa
-  `/gfn/oyunlar/<kategori>` (ör. "yarış oyunu" → /yaris, "aksiyon" → /aksiyon). **Birleşik tür
-  linklenmez** (content-rules 12).
+  `/gfn/oyunlar/<kategori>` (ör. "yarış oyunu" → /yaris, "aksiyon" → /aksiyon). Birleşik türde
+  her parçayı kendi kategorisine linkleyebilirsin; prose'da doğal değilse zorlama (content-rules 12).
 - **İlgili /blog yazıları:** varsa ekle (cloud-gaming-nedir, oyun izlenim yazıları). URL'leri kullanıcı
   verir veya mevcut olduğu doğrulanır — **uydurma URL YOK**.
 - **Dış linkler (Reddit vb.):** kaldır; içeriği dış link olmadan yerelleştir.
