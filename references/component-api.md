@@ -16,14 +16,15 @@ from gameplus_blog_components import *
 - `slugify(text)` → URL-safe slug (Türkçe karakterleri çevirir).
 - `hex_to_rgba(hex, alpha)` → tint/border renkleri için.
 - `inject_heading_ids(html)` → `(yeni_html, toc_items)`. Her `<h2>/<h3>`'e `id` ekler; `toc_items` = `[(level, text, anchor), ...]`. (H1'e dokunmaz → başlık ToC'ye girmez.)
-- `demote_h1(html)` → gövdedeki her `<h1>…</h1>`'i `<h2>…</h2>` yapar. **Blog gövdesi H1 İÇERMEZ** (CMS yazı başlığını zaten H1 basar; başlık ayrı iletilir). Build akışının EN SON adımında çağrılır (ToC `</h1>` çapasıyla enjekte edildikten sonra); enjekte edilen ToC/TLDR/info olduğu yerde kalır.
+- `ensure_leading_h1(html)` → gövdenin İLK başlığının H1 olmasını garanti eder. **Gövde TEK bir H1 ile başlar** (ilk başlık = yazı başlığı); taslakta H1 varsa korur, yoksa ilk başlığı (h2-h6) H1'e yükseltir. Build akışının EN SON adımında çağrılır. (`demote_h1(html)` DEPRECATED — eskiden H1'i H2'ye çevirirdi; artık H1'i korur, çağırma.)
 - `shrink_youtube_embeds(html)` → embed div'lerine `.gp-yt-wrap` ekler (max 720px, ortalı).
 - `linkify_platforms(meta_text, game_name)` → meta string'indeki Steam/Xbox/Epic/Game Pass kelimelerini arama linkine çevirir + ↗ ikon. (GFN card-table meta'sı için.)
+- `verify_output(final_html, blog_type="general", n_games=None, expect_faq=False)` → çıktı kontrolü; `[(durum, ad, detay)]` döndürür (PASS/FAIL/WARN). `print_report(results)` raporu basar, FAIL yoksa `True`. **Build'in SON adımı** (content-rules 13): tek H1 + ilk başlık H1, meta header yok, ANIMATED_BORDER_STYLE 1x, em dash yok, ToC/TLDR(3-6)/info-card, FAQ (expect_faq), oyun sayısı (n_games: inline = card-row), embed aspect-ratio, PlayStation uyarısı.
 
 ## Bileşenler
 
-### `render_meta(date, category="GAME+ Blog")`
-Üst meta chip'i. Genel blog: `render_meta("Güncellenme: 2026")`. GFN: `render_meta("21 Mayıs 2026", "GAME+ Blog · GFN Thursday")`.
+### `render_meta(date, category="GAME+ Blog")` — DEPRECATED
+**KULLANMA.** Üst meta header (tarih + marka chip'i) artık eklenmiyor; site/CMS eklenme tarihini ve GAME+ marka adını zaten gösterir (content-rules 6/7). Fonksiyon yalnız eski script'ler kırılmasın diye duruyor.
 
 ### `render_tldr(items)`
 `items` = HTML string listesi (**3-6 madde, duruma göre** — her zaman 4 şart değil). Her madde yeşil ✓ ile. V8 conic glow çerçeveli. Maddeleri `<strong>Etiket:</strong> açıklama` formatında ver. **Başlık ("Hızlı Özet") `<h2>`'dir.**
@@ -67,6 +68,7 @@ V9 layered + kompakt + Hover-Slide. `title` (trophy + gradient ile gösterilir).
  'badge_href': None}  # opsiyonel: rozet kategori linki — YALNIZCA anchor yoksa uygulanır (iç içe <a> olmaz)
 ```
 GFN'de `meta`'yı `linkify_platforms` ile platform-linkli ver, `anchor` koyma. Tür kategori linkini genelde **oyun başlığında** ver (card-row zaten jump-link).
+- **⚠️ DİKKAT — rozet sütunu hizalama + taşma:** Her `.card-row` ayrı bir grid olduğundan, rozet sütununa `max-content` verilirse sütun **satır-satır** rozet uzunluğuna göre değişir ve **oyun isimleri kayar (hizasız)**; sabit dar bir px (eski 140px) verilirse de uzun rozetler (AKSİYON-MACERA vb.) **kırpılır**. Çözüm: `render_card_table` artık **en uzun rozete göre TEK bir sabit px sütun** hesaplar (`bw = max(120, 10.2*maxlen + 24)`) ve tüm satırlara uygular → **isimler hizalı KALIR ve hiçbir rozet kırpılmaz**. Yani birleşik/uzun türler (**AKSİYON-MACERA, AKSİYON-RPG, INDIE-RPG, OYNAMASI ÜCRETSİZ, HAYATTA KALMA**) rahatça yazılabilir; kısaltmaya gerek yok. Hesap karakter-bazlı tahmindir ama **canlı blog ve önizleme aynı GreycliffCF fontunu** kullandığından tutarlıdır; alışılmadık uzun bir rozet eklersen card-table'ı önizlemede kontrol et. (Mobilde sütun zaten sabit 108px + küçük font, hizalı.)
 **Rozet kontrastı:** rozet METNİ `lighten(badge_color, 0.45)` ile açık tondur (doygun renk değil), koyu zeminde kontrast 7:1+ olur (Lighthouse/PageSpeed kontrast uyarısını giderir). Zemin (tür rengi %16) ve kenar (%45) hâlâ tür rengindedir; kimlik korunur. Aynı kural `render_game_h3_inline` rozetinde de uygulanır.
 
 ### `render_game_h3_inline(anchor, name, badge, badge_color, meta_text, level="h3", badge_href=None)`

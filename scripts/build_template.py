@@ -32,14 +32,13 @@ original_body = """<h1>BLOG BAŞLIĞI</h1>
 body, toc_items = inject_heading_ids(original_body)
 body = shrink_youtube_embeds(body)
 
-# ─── 3. Bileşenler (içeriğe göre doldur) ───
-meta = render_meta("Güncellenme: 2026")                 # GFN için: render_meta("21 Mayıs 2026", "GAME+ Blog · GFN Thursday")
+# ─── 3. Bileşenler (içeriğe göre doldur) — META HEADER YOK (render_meta DEPRECATED) ───
 toc  = render_floating_toc(toc_items)
 tldr = render_tldr([
     "<strong>Madde 1:</strong> ...",
     "<strong>Madde 2:</strong> ...",
 ])
-info = render_info_card([                                 # SADECE genel blog
+info = render_info_card([                                 # genel blog + GFN'de zorunlu
     ("İncelenen", "12 Yapım"), ("Öne Çıkan", "..."),
 ])
 
@@ -60,14 +59,19 @@ faq = render_faq_accordion([
 ])
 
 # ─── 4. Enjeksiyon (placement-rules.md — hedef cümleleri yazıdan seç) ───
-body = re.sub(r'(</h1>)', r'\1\n' + meta + toc + tldr + info, body, count=1)
+body = re.sub(r'(</h1>)', r'\1\n' + toc + tldr + info, body, count=1)   # meta header EKLENMEZ
 # body = body.replace('<h2 id="ikinci-h2">', cta_paketler + '<h2 id="ikinci-h2">', 1)
 # body = body.replace('<h3 id="ilk-oyun">', card_table + '<h3 id="ilk-oyun">', 1)
 # ... (placement-rules.md'deki tüm adımlar)
 # body = body.replace('<h2 id="sss">', end_cta + '<h2 id="sss">', 1)
 
 # ─── 5. Birleştir + çıktı ───
+body = ensure_leading_h1(body)          # gövde tek bir H1 ile başlar (ilk başlık = yazı başlığı)
 final_body = ANIMATED_BORDER_STYLE + body
+
+# ─── 5b. Doğrula (her çıktıda ZORUNLU — content-rules 13; FAIL varsa düzelt) ───
+# n_games=<oyun sayısı> (listicle), expect_faq=True (SSS varsa), GFN: blog_type="gfn"
+print_report(verify_output(final_body, blog_type="general", n_games=None, expect_faq=False))
 
 items = [{
     "title": "BLOG BAŞLIĞI",

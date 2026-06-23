@@ -289,8 +289,11 @@ def render_info_card(badges, style="grid"):
 </div>
 '''
 
-# --- Article Meta (date + platform, premium SVG) ---
+# --- Article Meta — DEPRECATED: üst meta header artık EKLENMEZ ---
 def render_meta(date, category="GAME+ Blog"):
+    """DEPRECATED — ÜST META HEADER ARTIK KULLANILMIYOR. Site/CMS yazının eklenme tarihini ve
+    marka adını (GAME+) zaten gösteriyor; gövdeye ikinci bir tarih/marka chip'i koymak tekrar olur.
+    Fonksiyon yalnız eski script'ler kırılmasın diye duruyor; YENİ build'lerde ÇAĞIRMA."""
     return f'''<div class="article-meta" style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:0.85em;color:#a8b2c0;margin:0 0 20px;padding:12px 0;border-bottom:1px solid #1f1f1f;">
   <span style="display:inline-flex;align-items:center;background:transparent;padding:6px 14px;border-radius:999px;color:#fbbf24;font-weight:700;border:1px solid #1f1f1f;letter-spacing:0.02em;">{SVG_BOLT}{category}</span>
   <span style="display:inline-flex;align-items:center;font-weight:500;color:#a8b2c0;">{SVG_CAL}{date}</span>
@@ -496,6 +499,12 @@ def category_url_for(badge):
 # --- Card-Table: compact rows with text-like tags ---
 def render_card_table(title, games):
     """games: list of {name, badge, badge_color, meta, anchor (optional)}"""
+    # Rozet sütunu TÜM satırlarda AYNI genişlikte (en uzun rozete göre) -> oyun isimleri HİZALI kalır
+    # ve uzun/birleşik rozetler (AKSİYON-MACERA vb.) KIRPILMAZ. Her .card-row ayrı grid olduğundan
+    # 'max-content' kullanılırsa sütun satır-satır değişir ve isimler kayar; bu yüzden sabit px.
+    # (Canlı blog ve önizleme aynı GreycliffCF fontunu kullandığından karakter-bazlı tahmin tutarlı.)
+    _bl = [len(g.get('badge') or '') for g in games if g.get('badge')]
+    bw = max(120, round(10.2 * max(_bl)) + 24) if _bl else 120
     rows = []
     for g in games:
         color = g.get("badge_color", "#76b900")
@@ -519,7 +528,7 @@ def render_card_table(title, games):
         # tür rozeti GFN kategorisine iç link — yalnızca satır kendisi link DEĞİLSE (iç içe <a> geçersiz)
         if g.get('badge_href') and row_tag != 'a' and badge_html:
             badge_html = f'<a href="{g["badge_href"]}" style="text-decoration:none;line-height:0;display:inline-flex;">{badge_html}</a>'
-        rows.append(f'''  <{row_tag} class="card-row"{attrs} style="--row-c:{color};display:grid;grid-template-columns:140px 1fr auto;gap:14px;padding:8px 18px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background 0.2s ease;text-decoration:none;color:inherit;">
+        rows.append(f'''  <{row_tag} class="card-row"{attrs} style="--row-c:{color};display:grid;grid-template-columns:{bw}px 1fr auto;gap:14px;padding:8px 18px;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;transition:background 0.2s ease;text-decoration:none;color:inherit;">
     {badge_html}
     {name_html}
     {meta_html}
@@ -542,18 +551,35 @@ def render_card_table(title, games):
 def render_game_h3_inline(anchor, name, badge, badge_color, meta_text, level="h3", badge_href=None):
     """Oyun başlığı. level: birden fazla oyun anlatılıyorsa her oyuna eklenir (h2/h3/h4 — çevredeki seviyeye göre).
     Başlık metnine RENK atanmaz (CMS başlık rengini zaten verir; yük azalır). badge_href verilirse tür rozeti
-    o GFN kategori sayfasına iç link olur (bkz. category_url_for + sayfa başına TEK link dedup kuralı)."""
+    o GFN kategori sayfasına iç link olur. **badge_href=None (varsayılan) = OTOMATİK:** tek/saf rozet kendi
+    kategorisine; **BİRLEŞİK rozet (AKSİYON-MACERA) HER PARÇAYI ayrı ayrı** linkler (AKSİYON→/aksiyon,
+    MACERA→/macera). **badge_href=False = link YOK** (tek-tür seride link stuffing'i önlemek için). **URL =
+    tüm rozeti o URL'e linkle.**"""
     tint = hex_to_rgba(badge_color, 0.16)
     border = hex_to_rgba(badge_color, 0.45)
     badge_text = lighten(badge_color, 0.45)  # WCAG kontrast: açık ton metin
+    inner, whole_href = badge, None
+    if badge_href is False:
+        pass  # link YOK
+    elif badge_href:
+        whole_href = badge_href  # açık URL -> tüm rozet
+    elif re.search(r'[-–/]', badge or ''):  # birleşik -> her parçayı kendi kategorisine linkle
+        seg = []
+        for p in re.split(r'(\s*[-–/]\s*)', badge):
+            if re.fullmatch(r'\s*[-–/]\s*', p):
+                seg.append(p)
+            else:
+                u = GFN_CATEGORY_URLS.get(_fold(p))
+                seg.append(f'<a href="{u}" style="color:inherit;text-decoration:none;">{p}</a>' if u else p)
+        inner = ''.join(seg)
+    else:  # tek/saf rozet -> tüm rozet (kategori varsa)
+        whole_href = GFN_CATEGORY_URLS.get(_fold(badge or ''))
     badge_html = (f'<span style="display:inline-block;color:{badge_text};background:{tint};border:1px solid {border};'
                   f'padding:3px 10px;border-radius:4px;font-size:0.5em;line-height:1.4;font-weight:800;letter-spacing:0.14em;'
-                  f'text-transform:uppercase;white-space:nowrap;">{badge}</span>')
-    if badge_href:
-        # display:contents -> the anchor generates NO box; the badge span lays out as a direct flex
-        # child of the heading, byte-identical to the unlinked case (same height, same 12px gap).
-        # (Earlier inline-flex/line-height:0 collapsed linked badges to ~8px tall.)
-        badge_html = f'<a href="{badge_href}" style="text-decoration:none;display:contents;">{badge_html}</a>'
+                  f'text-transform:uppercase;white-space:nowrap;">{inner}</span>')
+    if whole_href:
+        # display:contents -> anchor kutu üretmez; rozet linksizle birebir aynı yerleşir.
+        badge_html = f'<a href="{whole_href}" style="text-decoration:none;display:contents;">{badge_html}</a>'
     return f'''<{level} id="{anchor}" style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:32px 0 14px;line-height:1.4;">
   {badge_html}
   <span style="font-weight:700;letter-spacing:-0.01em;">{name}</span>
@@ -647,12 +673,24 @@ def inject_heading_ids(html):
     return new_html, toc_items
 
 
+def ensure_leading_h1(html):
+    """Blog gövdesi İLK başlığıyla (yazı başlığı) bir H1 olarak başlar. Taslakta zaten <h1> varsa
+    DOKUNULMAZ. Eskiden CMS başlığı ayrı bastığı için gövde H1'i H2'ye çevriliyordu (demote_h1);
+    KURAL TERSİNE DÖNDÜ — artık her blog yazısı gövdede TEK bir H1 ile başlar (ilk başlık H1 olur).
+    Taslakta H1 yoksa gövdedeki İLK başlık (h2-h6) H1'e yükseltilir; sonraki başlıklar olduğu gibi kalır.
+    Build akışının EN SON adımında çağır (ToC '</h1>' çapasıyla enjekte edildikten sonra)."""
+    if re.search(r'<h1\b', html, flags=re.IGNORECASE):
+        return html
+    return re.sub(r'<(h[2-6])(\b[^>]*)>(.*?)</\1>',
+                  lambda m: f'<h1{m.group(2)}>{m.group(3)}</h1>',
+                  html, count=1, flags=re.DOTALL | re.IGNORECASE)
+
+
 def demote_h1(html):
-    """Blog gövdesi H1 İÇERMEZ — yazı başlığı CMS'e AYRI iletilir ve CMS onu zaten H1 olarak basar.
-    Gövdede H1 varsa H2'ye çevrilir (sayfada çift H1 / SEO sorunu olmasın); gövdeye yeni H1 EKLENMEZ.
-    Build akışında en SON adımda çağır (ToC '</h1>' çapasıyla enjekte edildikten sonra; bu fonksiyon
-    enjekte edilen ToC/TLDR/info'yu olduğu yerde bırakır, yalnız başlık etiketini h1->h2 yapar)."""
-    return re.sub(r'<h1(\b[^>]*)>(.*?)</h1>', r'<h2\1>\2</h2>', html, flags=re.DOTALL | re.IGNORECASE)
+    """DEPRECATED — eski kural (gövde H1 İÇERMEZ; başlığı H2'ye çevir) ARTIK GEÇERSİZ.
+    Yeni kural: gövde tek bir H1 ile başlar (bkz. ensure_leading_h1). Bu shim geriye dönük
+    uyumluluk için H1'i KORUR (artık H2'ye ÇEVİRMEZ); yeni build'lerde ensure_leading_h1 kullan."""
+    return ensure_leading_h1(html)
 
 
 # --- YouTube embed shrink (720px max, centered) ---
@@ -663,3 +701,88 @@ def shrink_youtube_embeds(html):
         r'\1\n<div class="gp-yt-wrap" style="width: 100%;',
         html
     )
+
+
+# --- Çıktı doğrulama (her build'in EN SON adımı) ------------------------------
+# Amaç: her yazının AYNI iskeletle çıkmasını garanti etmek (tutarlı çıktı). Build script
+# final body'yi (ANIMATED_BORDER_STYLE + enjekte edilmiş gövde) verir; print_report raporu basar.
+# FAIL = çıktı kuralı ihlali, teslimden ÖNCE düzelt. WARN = göz at, bağlama göre kabul edilebilir.
+# Bu programatik kontrol; yargı gerektiren maddeler için references/qa-checklist.md'ye de bak.
+def verify_output(final_html, blog_type="general", n_games=None, expect_faq=False):
+    """final_html: build'in son hali (ANIMATED_BORDER_STYLE + gövde).
+    blog_type: 'general' (rehber/listicle) | 'gfn' (GFN Thursday).
+    n_games: birden çok oyun anlatan yazıda oyun sayısı (inline başlık + card-row bununla eşleşmeli).
+    expect_faq: SSS bölümü olan yazılarda True.
+    Dönüş: [(durum, ad, detay)]; durum 'PASS'|'FAIL'|'WARN'."""
+    r = []
+    def add(cond, name, ok_d="", fail_d="", warn=False):
+        r.append(("PASS" if cond else ("WARN" if warn else "FAIL"), name, ok_d if cond else fail_d))
+
+    # 1) Tek H1 ve İLK başlık H1 (yeni kural: her yazı gövdede tek H1 ile başlar)
+    h1n = len(re.findall(r'<h1\b', final_html, re.I))
+    first = re.search(r'<h([1-6])\b', final_html, re.I)
+    add(h1n == 1, "Tek H1", f"{h1n} adet H1", f"{h1n} adet H1 (tam 1 olmalı)")
+    add(bool(first) and first.group(1) == '1', "İlk başlık H1",
+        "ilk başlık H1", "ilk başlık H1 değil (ensure_leading_h1 çağır)")
+
+    # 2) Üst meta header EKLENMEMİŞ (CMS tarih + marka adını zaten gösteriyor)
+    add('class="article-meta"' not in final_html, "Meta header yok",
+        "meta header eklenmemiş", "article-meta meta header var — KALDIR (render_meta kullanma)")
+
+    # 3) ANIMATED_BORDER_STYLE tam 1 kez
+    style_n = final_html.count('@keyframes gameplus-border-shimmer')
+    add(style_n == 1, "Stil bloğu (1x)", "bir kez", f"{style_n} kez (1 olmalı, en başta)")
+
+    # 4) Em dash (—) yok (en dash – tür rozetinde ayraç olabilir, o serbest)
+    add('—' not in final_html, "Em dash yok", "yok", "em dash (—) var — nokta/virgülle böl")
+
+    # 5) Floating ToC
+    add('class="floating-toc"' in final_html, "Floating ToC", "var", "floating ToC yok")
+
+    # 6) TLDR + 3-6 madde
+    tl = re.search(r'class="tldr-block.*?</ul>', final_html, re.S)
+    add(bool(tl), "TLDR var", "var", "TLDR (Hızlı Özet) yok")
+    if tl:
+        n_tldr = len(re.findall(r'<li[ >]', tl.group(0)))   # <li ...> (SVG <line> ile karışmasın)
+        add(3 <= n_tldr <= 6, "TLDR 3-6 madde", f"{n_tldr} madde", f"{n_tldr} madde (3-6 olmalı)")
+
+    # 7) Info-card (TLDR ile birlikte her iki blog tipinde de zorunlu)
+    add('class="info-card"' in final_html, "Info-card", "var", "info-card yok (genel blog ve GFN'de zorunlu)")
+
+    # 8) FAQ (SSS bölümü varsa accordion)
+    if expect_faq:
+        add('class="faq-block"' in final_html, "FAQ accordion", "var",
+            "FAQ yok (SSS H3+P çiftleri accordion'a çevrilmeli)")
+
+    # 9) Oyun sayısı tutarlı: inline başlık == card-row == n_games (genel listicle)
+    if n_games is not None:
+        n_inline = final_html.count('flex-basis:100%;margin-top:-4px;')   # render_game_h3_inline imzası
+        n_rows = final_html.count('class="card-row"')
+        add(n_inline == n_games, "Inline oyun başlığı",
+            f"{n_inline} başlık", f"{n_inline} inline başlık (beklenen {n_games}) — düz <hN>Oyun</hN> kalmış olabilir")
+        add(n_rows == n_games, "Card-table satırı", f"{n_rows} satır", f"{n_rows} card-row (beklenen {n_games})")
+
+    # 10) YouTube embed: aspect-ratio var, padding-bottom % hack yok (kare-bug)
+    if 'youtube.com/embed' in final_html:
+        add('aspect-ratio' in final_html, "Embed aspect-ratio", "16/9", "aspect-ratio yok (embed kare görünebilir)")
+        add(not re.search(r'padding-bottom:\s*5[0-9]', final_html), "Embed padding-hack yok",
+            "yok", "padding-bottom % hack var — aspect-ratio kullan", warn=True)
+
+    # 11) PlayStation (GFN platform/lisans/CTA bağlamında YASAK — WARN, haber yazıları hariç)
+    if re.search(r'playstation', final_html, re.I):
+        add(False, "PlayStation geçiyor", "",
+            "'PlayStation' var — GFN platform/lisans/CTA bağlamında OLMADIĞINDAN emin ol", warn=True)
+
+    return r
+
+
+def print_report(results, label=""):
+    """verify_output sonucunu bas; FAIL yoksa True döner."""
+    sym = {"PASS": "✓", "FAIL": "✗", "WARN": "!"}
+    print(("── Çıktı kontrolü " + label + " ").ljust(58, "─"))
+    for status, name, detail in results:
+        print(f"  {sym[status]} {name}" + (f" — {detail}" if detail else ""))
+    fails = [x for x in results if x[0] == "FAIL"]
+    warns = [x for x in results if x[0] == "WARN"]
+    print(f"  → {'GEÇTI' if not fails else str(len(fails)) + ' HATA'}" + (f", {len(warns)} uyarı" if warns else ""))
+    return not fails

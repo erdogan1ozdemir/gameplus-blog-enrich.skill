@@ -188,7 +188,7 @@ def render_info_card(badges, style="grid"):
 </div>
 '''
 
-# --- Article Meta (date + platform, premium SVG) ---
+# --- Article Meta — DEPRECATED: üst meta header artık EKLENMEZ (çağırma) ---
 def render_meta(date, category="GAME+ Blog"):
     return f'''<div class="article-meta" style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:0.85em;color:#8b95a7;margin:0 0 20px;padding:12px 0;border-bottom:1px solid #1f1f1f;">
   <span style="display:inline-flex;align-items:center;background:#000;padding:6px 14px;border-radius:999px;color:#fbbf24;font-weight:700;border:1px solid #1f1f1f;letter-spacing:0.02em;">{SVG_BOLT}{category}</span>
@@ -484,10 +484,14 @@ def inject_heading_ids(html):
     new_html = re.sub(r'<(h[23])>(.*?)</\1>', replace_h, html, flags=re.DOTALL)
     return new_html, toc_items
 
-def demote_h1(html):
-    """Blog gövdesi H1 İÇERMEZ — CMS yazı başlığını zaten H1 basar (başlık ayrı iletilir).
-    Gövdedeki H1 -> H2 (build'in EN SON adımı, ToC '</h1>' çapasıyla enjekte edildikten sonra)."""
-    return re.sub(r'<h1(\b[^>]*)>(.*?)</h1>', r'<h2\1>\2</h2>', html, flags=re.DOTALL | re.IGNORECASE)
+def ensure_leading_h1(html):
+    """Gövde TEK bir H1 ile başlar (ilk başlık = yazı başlığı). Taslakta H1 varsa korur;
+    yoksa ilk başlığı (h2-h6) H1'e yükseltir. Build'in EN SON adımı. (demote_h1 DEPRECATED.)"""
+    if re.search(r'<h1\b', html, flags=re.IGNORECASE):
+        return html
+    return re.sub(r'<(h[2-6])(\b[^>]*)>(.*?)</\1>',
+                  lambda m: f'<h1{m.group(2)}>{m.group(3)}</h1>',
+                  html, count=1, flags=re.DOTALL | re.IGNORECASE)
 
 # === REMAKE GAME DATA ===
 remake_games_data = {
@@ -524,7 +528,6 @@ remake_clean = shrink_youtube_embeds(remake_clean)
 
 # Build components
 remake_toc_html = render_floating_toc(remake_toc)
-remake_meta = render_meta("Güncellenme: 2026")
 remake_tldr = render_tldr([
     "<strong>Remake nedir:</strong> Eski oyunun güncel teknoloji ve modern mekaniklerle baştan inşa edilmesi.",
     "<strong>Remake, Remaster ve Reboot:</strong> Üçü farklı kapsam, remake en derin yeniden yapım.",
@@ -609,8 +612,8 @@ remake_card_table = render_card_table(
 )
 
 # === Inject components into remake_clean ===
-# 1. Meta + ToC + TLDR + Info-Card after H1
-remake_clean = re.sub(r'(</h1>)', r'\1\n' + remake_meta + remake_toc_html + remake_tldr + remake_info, remake_clean, count=1)
+# 1. ToC + TLDR + Info-Card after H1 (meta header YOK)
+remake_clean = re.sub(r'(</h1>)', r'\1\n' + remake_toc_html + remake_tldr + remake_info, remake_clean, count=1)
 
 # 2. Comparison table after 2nd paragraph in "Remake, Remaster ve Reboot Arasındaki Fark" section
 remake_clean = re.sub(
@@ -709,7 +712,7 @@ if faq_idx != -1:
 remake_clean = remake_clean.replace(faq_h2, remake_end_cta + faq_h2, 1)
 
 # Prepend animated border styles
-remake_clean = demote_h1(remake_clean)  # gövde H1 içermez (CMS yazı başlığını zaten H1 basar)
+remake_clean = ensure_leading_h1(remake_clean)  # gövde tek bir H1 ile başlar (ilk başlık)
 remake_final_body = ANIMATED_BORDER_STYLE + remake_clean
 
 # Write body-only version
@@ -726,7 +729,6 @@ gfn_clean = Path('/tmp/gfn-thursday-original.html').read_text(encoding='utf-8')
 gfn_clean, gfn_toc = inject_heading_ids(gfn_clean)
 gfn_clean = shrink_youtube_embeds(gfn_clean)
 gfn_toc_html = render_floating_toc(gfn_toc)
-gfn_meta = render_meta("21 Mayıs 2026", "GAME+ Blog · GFN Thursday")
 gfn_tldr = render_tldr([
     "<strong>Bu hafta:</strong> 21 Mayıs 2026 itibarıyla GeForce NOW kütüphanesine <strong>8 yeni oyun</strong> eklendi.",
     "<strong>Yıldız oyun:</strong> <em>Forza Horizon 6</em> Steam ve Xbox üzerinden Game Pass kapsamında yayında.",
@@ -776,7 +778,7 @@ gfn_prev_weeks = render_prev_weeks_cards([
 ])
 
 # Inject
-gfn_clean = re.sub(r'(</h1>)', r'\1\n' + gfn_meta + gfn_toc_html + gfn_tldr, gfn_clean, count=1)
+gfn_clean = re.sub(r'(</h1>)', r'\1\n' + gfn_toc_html + gfn_tldr, gfn_clean, count=1)   # meta header YOK
 gfn_clean = gfn_clean.replace('<h2 id="topluluktan-one-cikanlar">Topluluktan Öne Çıkanlar</h2>',
     gfn_cta_paketler + '<h2 id="topluluktan-one-cikanlar">Topluluktan Öne Çıkanlar</h2>', 1)
 gfn_clean = gfn_clean.replace('<!-- Responsive YouTube Embed Sonu -->',
@@ -793,7 +795,8 @@ gfn_clean = re.sub(
 gfn_clean = gfn_clean.replace('<h2 id="geforce-now-thursday-de-onceki-haftalarda-neler-oldu">',
     gfn_highlight + gfn_end_cta + '<h2 id="geforce-now-thursday-de-onceki-haftalarda-neler-oldu">', 1)
 
-gfn_clean = demote_h1(gfn_clean)  # gövde H1 içermez (CMS yazı başlığını zaten H1 basar)
+gfn_clean = ensure_leading_h1(gfn_clean)  # gövde tek bir H1 ile başlar (ilk başlık)
+# NOT: kanonik kütüphanede her build'in SON adımı: verify_output(final_body, ...) + print_report(...) (content-rules 13).
 gfn_final_body = ANIMATED_BORDER_STYLE + gfn_clean
 (OUT_DIR / 'ornek-blog-gfn-thursday-v9-body-only.html').write_text(gfn_final_body, encoding='utf-8')
 gfn_full = PAGE_HEAD.replace("__TITLE__", "GFN Thursday 21 Mayıs - Game+ Blog - V3") + gfn_final_body + PAGE_FOOT

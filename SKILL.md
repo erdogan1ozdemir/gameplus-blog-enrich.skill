@@ -25,7 +25,7 @@ Skill iki blog tipini ayırt eder; bileşen seti farklıdır:
 
 | Öğe | Genel Blog (rehber/listicle) | GFN Thursday (haftalık) |
 |---|---|---|
-| Meta header | `⚡ GAME+ Blog · 📅 Güncellenme: YIL` | `⚡ GAME+ Blog · GFN Thursday · 📅 tarih` |
+| Meta header | ❌ **EKLENMEZ** (site/CMS eklenme tarihi + GAME+ marka adını zaten gösterir; `render_meta` DEPRECATED) | ❌ **EKLENMEZ** |
 | Info-card | ✅ (4 metrik: incelenen sayı, öne çıkan, türler…) | ✅ 4 metrik. **Aylık:** "Bu Ay Eklenen N". **Haftalık:** metrikleri o haftaya göre uyarla — yeni oyun olmayabilir (DLC/sezon/update/geri dönen); "0" gösterme (bkz. content-rules kural 10) |
 | Card-table | "En İyi N …" tıklanabilir liste (oyun bölümlerine kayar) | "Bu Hafta Eklenen Oyunlar" (platform linkli) |
 | CTA sayısı | **2-3** (her zaman 3 şart değil): Paketler + dual End zorunlu, CTA Oyunlar opsiyonel | **Tek** End CTA + 1 compact featured CTA |
@@ -44,7 +44,7 @@ Detaylı yerleşim kuralları: **`references/placement-rules.md`**.
 - Blog tipini tespit et (GFN Thursday mı, genel blog mu).
 
 ### 2. Orijinal HTML gövdesini hazırla
-- Yazarın metnini HTML'e çevir (H2/H3/H4, `<p>`, `<ul>`, `<a>`, embed'ler). **Cümleleri değiştirme.** **Gövdeye H1 EKLEME** — CMS yazı başlığını zaten H1 olarak basar (başlık ayrı iletilir); taslakta H1 varsa build sonunda `demote_h1` ile H2'ye çevrilir.
+- Yazarın metnini HTML'e çevir (H1 + H2/H3/H4, `<p>`, `<ul>`, `<a>`, embed'ler). **Cümleleri değiştirme.** **Gövde TEK bir H1 ile başlar** (ilk başlık = yazı başlığı, H1); taslakta H1 varsa korunur, yoksa build sonunda `ensure_leading_h1` ilk başlığı H1 yapar. Bölüm başlıkları H2/H3.
 - `inject_heading_ids(html)` ile her H2/H3'e `id` ekle ve ToC öğelerini topla.
 - `shrink_youtube_embeds(html)` ile embed'leri `.gp-yt-wrap` (max 720px, ortalı) yap.
 
@@ -59,8 +59,7 @@ toc_items = []  # inject_heading_ids doldurur
 body, toc_items = inject_heading_ids(body)
 body = shrink_youtube_embeds(body)
 
-meta   = render_meta("Güncellenme: 2026")                      # genel blog
-tldr   = render_tldr(["<strong>…:</strong> …", ...])           # ✓ tikli maddeler
+tldr   = render_tldr(["<strong>…:</strong> …", ...])           # ✓ tikli maddeler (meta header EKLENMEZ)
 info   = render_info_card([("İncelenen", "12 Yapım"), ...])    # sadece genel blog
 toc    = render_floating_toc(toc_items)
 cta_p  = render_cta_paketler(headline, desc)
@@ -71,7 +70,7 @@ faq    = render_faq_accordion([(soru, cevap), ...])
 
 ### 4. Yerleştir (placement)
 `references/placement-rules.md`'deki kurallara göre bileşenleri orijinal gövdeye `str.replace` / `re.sub` ile enjekte et. Özet:
-- Meta + ToC + TLDR + (info-card) → (taslak) H1'den hemen sonra enjekte edilir; **build EN SON adımda `demote_h1(body)` ile başlığı H1→H2 yapar (gövde H1 İÇERMEZ; CMS başlığı zaten H1)**
+- ToC + TLDR + (info-card) → H1'den hemen sonra enjekte edilir (**meta header YOK; render_meta DEPRECATED**); **build EN SON adımda `ensure_leading_h1(body)` ile gövdenin tek bir H1 ile başlamasını sağlar (ilk başlık = yazı başlığı)**
 - Karşılaştırma tablosu → ilgili kavram paragrafından sonra
 - **CTA Paketler** → 2. H2'den önce
 - **Card-table** → listicle'ın yerine, ilk oyun H3'ünden ÖNCE (genel blog); GFN'de oyun listesi yerine
@@ -88,6 +87,15 @@ faq    = render_faq_accordion([(soru, cevap), ...])
 ```python
 items = [{"title": "Remake Nedir? …", "slug": "remake-nedir-…", "html": final_body}]
 ```
+
+### 6. Doğrula (kontrol adımı — her çıktıda ZORUNLU, tutarlılık için)
+Çıktıyı teslim etmeden önce final body üzerinde otomatik kontrol çalıştır. Bu adım, her yazının **aynı iskeletle** çıkmasını garanti eder (kullanıcının en çok önemsediği şey):
+```python
+from gameplus_blog_components import verify_output, print_report
+res = verify_output(final_body, blog_type="general", n_games=12, expect_faq=True)  # GFN: blog_type="gfn", n_games=None
+ok  = print_report(res)   # FAIL varsa TESLİM ETME, düzelt
+```
+Otomatik doğrulananlar: **tek H1 + ilk başlık H1**, **meta header yok**, ANIMATED_BORDER_STYLE 1x, **em dash yok**, floating ToC + TLDR (3-6 madde) + info-card, FAQ (varsa), oyun sayısı (**inline başlık = card-row = n_games**, düz `<hN>Oyun</hN>` kalmamış), YouTube embed `aspect-ratio` (kare-bug yok), PlayStation uyarısı. **FAIL = kural ihlali.** Yargı gerektiren maddeler için **`references/qa-checklist.md`**'yi gözden geçir (yazarın cümleleri korundu mu, tür taksonomisi tutarlı mı, CTA dürüstlüğü, lisans hatırlatması, GFN tarih sütununda "-").
 
 ## Tasarım sistemi (v9 — son hal)
 
@@ -116,7 +124,8 @@ Tam liste **`references/content-rules.md`**'de. En kritikleri:
 - **Lisans hatırlatması:** GFN oyun satmaz, sadece çalıştırır; oyunun ilgili platformda (Steam/Xbox/Epic) lisansına sahip olmak gerekir.
 - **GFN Thursday'de tek CTA** yeterli (Paketler + Oyunlar yönlendirmesi). İki ayrı blok koyma.
 - Em dash (—) kullanma; nokta veya virgülle böl.
-- **Gövdeye H1 EKLEME** — CMS yazı başlığını zaten H1 basar (başlık ayrı iletilir). Gövdede H1 varsa H2'ye çevir (`demote_h1`, build'in son adımı). Çift H1 SEO sorunudur.
+- **Gövde TEK bir H1 ile başlar** (ilk başlık = yazı başlığı, H1). `ensure_leading_h1` build'in son adımı: taslakta H1 varsa korur, yoksa ilk başlığı H1 yapar. Yalnız 1 adet H1; bölüm başlıkları H2/H3. (`demote_h1` DEPRECATED.)
+- **Üst meta header / tarih-marka chip'i EKLEME** (`render_meta` DEPRECATED) — site/CMS eklenme tarihini ve GAME+ marka adını zaten gösterir.
 - **GFN embargo yerelleştirmesinde** (İngilizce→TR; enrichment'tan farklı olarak burada metin çevrilir): kelime oyunlarını/deyimleri **doğal ve anlamlı** Türkçeyle ver; birebir oturmuyor ve çiğ kalıyorsa ZORLAMA, espriyi/tonu taşıyan temiz bir ifadeyle değiştir (ör. "license to stream" zorlaması yerine doğal bir cümle). Mekanik/tarih/teknik bilgi birebir korunur. Detay: `references/gfn-localization.md`.
 - Görsel alt text / caption / şema markup EKLEME (kullanıcı istemiyor).
 - YouTube embed'leri ve mevcut linkleri koru.
@@ -136,7 +145,8 @@ Tam liste **`references/content-rules.md`**'de. En kritikleri:
 
 - `references/design-system.md` — tüm renkler, V8/V9 efektleri, bileşen görünümleri
 - `references/placement-rules.md` — bileşenlerin yazıya nereye/nasıl enjekte edileceği, GFN vs genel blog
-- `references/content-rules.md` — dürüstlük, kopya, taksonomi, yasak öğeler
+- `references/content-rules.md` — dürüstlük, kopya, taksonomi, yasak öğeler, çıktı kontrolü (kural 13)
+- `references/qa-checklist.md` — teslim öncesi çıktı kontrol listesi (`verify_output` + manuel/yargısal maddeler)
 - `references/component-api.md` — her `render_*` fonksiyonunun imzası, parametreleri, örnek çağrı
 - `references/docx-extract.md` — .docx'ten yapı çıkarma yöntemi
 - `references/gfn-localization.md` — **GFN embargo (EN) → TR yerelleştirme** kuralları (canlı dil, kelime oyunu doğallığı, çıkış tarihi formatı, iç linkler, YouTube, önceki haftalar, teslim doc + `HTML Versiyon`)

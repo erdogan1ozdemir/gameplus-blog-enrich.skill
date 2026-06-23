@@ -143,5 +143,6 @@ body = re.sub(r'<!--\s*EMBED:\s*(.*?)\s*([A-Za-z0-9_-]{11})\s*-->', lambda m: em
 body = body.replace("</h1>", "</h1>\n"+toc+tldr+info, 1)
 # enjeksiyon çapaları için başlık METNİNE göre eşleştir (slug tahmini KIRILGAN: İ->i-niyor, thursday-de)
 body = re.sub(r'(<h2 id="[^"]*">GeForce NOW Thursday)', endcta + r'\1', body, count=1)
-body = demote_h1(body)  # gövde H1 içermez
+body = ensure_leading_h1(body)  # gövde tek bir H1 ile başlar (ilk başlık = yazı başlığı)
+print_report(verify_output(ANIMATED_BORDER_STYLE+body, blog_type="gfn", expect_faq=False))  # content-rules 13
 ```

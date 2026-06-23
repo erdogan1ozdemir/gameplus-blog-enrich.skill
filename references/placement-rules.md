@@ -5,9 +5,9 @@ Orijinal gövde HTML'ine bileşenleri `str.replace` / `re.sub` ile enjekte et. H
 ## Genel Blog (rehber / listicle / "X nedir")
 
 Sıra:
-1. **H1'den hemen sonra:** `meta + floating_toc + tldr + info_card`
+1. **H1'den hemen sonra:** `floating_toc + tldr + info_card` (**meta header YOK** — render_meta DEPRECATED; bkz. content-rules 6/7). Gövde **tek bir H1 ile başlar** (ilk başlık = yazı başlığı).
    ```python
-   body = re.sub(r'(</h1>)', r'\1\n' + meta + toc + tldr + info, body, count=1)
+   body = re.sub(r'(</h1>)', r'\1\n' + toc + tldr + info, body, count=1)
    ```
 2. **Karşılaştırma tablosu:** ilgili kavramın açıklandığı paragraftan sonra (örn. "Remake/Remaster/Reboot" farkını anlatan son cümleden sonra).
 3. **CTA Paketler:** 2. H2'den HEMEN ÖNCE.
@@ -21,6 +21,7 @@ Sıra:
    body = body.replace('<h3 id="ilk-oyun-slug">', card_table + '<h3 id="ilk-oyun-slug">', 1)
    ```
 6. **Her oyun başlığı → inline format (ZORUNLU; yazıda BİRDEN FAZLA oyun varsa):** düz `<h2/h3/h4 id="x">Oyun Adı</…>`'ü `render_game_h3_inline(anchor, isim, "TÜR", renk, "Stüdyo · Yıl", level="h2|h3|h4", badge_href=…)` ile değiştir. **Başlık H2/H3/H4 olabilir** (çevredeki seviyeye uy). **Başlık metnine RENK atanmaz** (CMS verir). Tür + stüdyo + yıl her oyunda; card-table satırındaki veriyle birebir aynı. Yıl yoksa dönem ("2027 (beklenen)", "Belirsiz", "Yayında"). Tür GFN kategorisine fit ediyorsa rozet o kategoriye iç link (`badge_href`); YALNIZCA tek/saf rozet linklenir, birleşik rozet (Aksiyon-RPG, Aksiyon-Macera vb.) linklenmez, dedup yok (eşleşen her rozet linklenir) — content-rules 12. Tek oyun anlatılıyorsa başlık şart değil. Etkinlik özetleri (State of Play) dahil.
+7. **Oyun fragmanı (YouTube embed) yeri:** Bir oyunun fragmanı varsa, embed **oyun başlığının HEMEN ALTINA, açıklama metninden ÖNCE** gelir (sıra: **başlık → embed → açıklama**). Embed'i başlığın ÜSTÜNE koyma. Taslakta her oyun başlığının altına `<!-- EMBED: <ad> <11-haneli-video-id> -->` koy; build EN SON karakter grubunu (video id) 16:9 iframe'e çevirir. (GFN'de öne çıkan oyun bölümünde sıra: başlık → embed → italik tagline → açıklama.)
 7. **CTA Oyunlar (OPSİYONEL):** listenin ~2/3'ünde bir oyun başlığından önce. **CTA sayısı 2-3'tür; her zaman 3 şart değil** — kısa/odaklı yazıda CTA Oyunlar atlanabilir (Paketler + dual End kalır).
 8. **İkinci tablo** (varsa, örn. "beklenen oyunlar"): ilgili giriş paragrafından sonra.
 9. **Editör notu 2 / Ubisoft CTA:** ilgili bölümden sonra (Ubisoft oyunu geçiyorsa Ubisoft CTA).
@@ -33,7 +34,7 @@ Sıra:
 > **0. Embargo (EN) draft'ı geldiyse ÖNCE YERELLEŞTİR** (`references/gfn-localization.md`): canlı dil (4 Haziran dışı yazıların tonu), kelime oyunlarını doğal/anlamlı Türkçeyle (çiğ kalıyorsa zorlama), çıkış tarihi formatı **"[Platform] çıkış tarihi: [TR tarih]"**, iç linkler (/gfn, /gfn/paketler, /gfn/oyunlar, /ubisoft, tür kategori, ilgili /blog), öne çıkan oyunlara **YouTube fragmanı** (bulunmazsa kullanıcıdan iste), öne çıkan oyun bölümünde **italik tagline** (embed'in hemen altında). SONRA aşağıdaki enrichment'ı uygula. **Teslim:** tek `.docx` = yerelleştirilmiş metin + `HTML Versiyon` (enriched HTML) + `files-preview` + Excel.
 
 Farklar:
-1. **H1'den sonra (enjeksiyon çapası):** `toc + tldr + info-card` enjekte edilir; **meta header YOK** (render_meta ekleme; CMS kategori + tarihi zaten gösterir). **Gövde H1 İÇERMEZ** — build en SON adımda `demote_h1(body)` ile başlık H1'ini H2'ye çevirir (CMS yazı başlığını zaten H1 basar; başlık ayrı iletilir — content-rules 7). **TLDR ve info-card GFN'de de ZORUNLU.** GFN info-card 4 metrik; metrikler yazının ritmine göre değişir:
+1. **H1'den sonra (enjeksiyon çapası):** `toc + tldr + info-card` `</h1>`'den hemen sonra enjekte edilir; **meta header YOK** (render_meta DEPRECATED, ekleme; site/CMS marka adı + tarihi zaten gösterir). **Gövde TEK bir H1 ile BAŞLAR** (ilk başlık = yazı başlığı, H1) — build en SON adımda `ensure_leading_h1(body)` çağırır (taslakta H1 varsa korur, yoksa ilk başlığı H1 yapar; `demote_h1` DEPRECATED — content-rules 7). **TLDR ve info-card GFN'de de ZORUNLU.** GFN info-card 4 metrik; metrikler yazının ritmine göre değişir:
    - **Aylık / ay başı yazısı:** "Bu Ay Eklenen: N Oyun" (ayın toplamı), "Ayın/Haftanın Öne Çıkanı", "Öne Çıkan Dönüş", "Platformlar" (Steam · Epic · Xbox).
    - **Haftalık yazı:** "Bu Ay Eklenen oyun sayısı" metriğini ZORLAMA — her hafta yeni oyun eklenmeyebilir (bazı haftalar yeni oyun yerine DLC / yeni sezon / güncelleme gelir ya da katalogdan kalkan bir oyun geri döner). **"Bu Hafta Eklenen: 0" gibi olumsuz/boş değer gösterme;** metrikleri o haftanın gerçek içeriğine göre seç (örn. "Bu Hafta Eklenen" yalnızca gerçekten yeni oyun varsa, "Haftanın Öne Çıkanı", "Öne Çıkan Güncelleme/DLC/Sezon", "Geri Dönen Oyun", "Platformlar"). Ayrıntı: `content-rules.md` kural 10.
 2. **Compact CTA (Controller-Tag):** haftanın öne çıkan oyununun bölümünden hemen sonra / 2. H2'den önce. Tek öne çıkan oyun için.
@@ -48,5 +49,5 @@ Farklar:
 - **Özet (TLDR) madde sayısı:** 3-6 (duruma göre). **CTA sayısı:** 2-3 (Oyunlar opsiyonel). **Ekstra siyah arka plan basma** (site zaten siyah; bloklar transparent). **Başlık rengini CMS'e bırak.**
 - Style bloğu (`ANIMATED_BORDER_STYLE`) final gövdenin **en başına bir kez**.
 - Her `replace`/`sub` için `count=1` — yanlışlıkla çoklu enjeksiyon olmasın.
-- Enjeksiyondan sonra doğrula: `grep -c "card-row"`, badge sayısı, FAQ sayısı beklenenle uyuşmalı.
+- **Enjeksiyondan sonra `verify_output(final_body, blog_type=..., n_games=..., expect_faq=...)` + `print_report(...)` çalıştır** (content-rules 13 + `references/qa-checklist.md`): tek H1 + ilk başlık H1, meta header yok, ANIMATED_BORDER_STYLE 1x, ToC/TLDR(3-6)/info-card, oyun sayısı (inline başlık = card-row), embed aspect-ratio, em dash yok. **FAIL varsa teslim etme, düzelt.**
 - Çoklu blog: her biri için aynı pipeline; sonda `export(items, fmt=...)`.

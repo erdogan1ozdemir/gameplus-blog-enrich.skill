@@ -35,10 +35,11 @@ GeForce NOW oyun SATMAZ, sadece bulutta ÇALIŞTIRIR. Oynamak için oyunun **GFN
 ## 6. Yazım / üslup
 - **Em dash (—) kullanma.** Nokta veya virgülle böl.
 - Dil yazarın diliyle uyumlu olsun (samimi "sen" dili, Gameplus tonu).
-- Tarih/breadcrumb gibi alanları yazıya ekleme (CMS otomatik ekliyor). Sadece meta chip'te "Güncellenme: YIL" veya GFN tarihi olur.
+- Tarih/breadcrumb/marka adı gibi alanları yazıya EKLEME — site/CMS bunları (eklenme tarihi + GAME+ marka adı) zaten gösteriyor. **Üst meta header / tarih-marka chip'i KOYMA** (`render_meta` DEPRECATED; çağırma). Bkz. kural 7.
 
 ## 7. EKLENMEYECEKLER
-- **Gövdeye H1 başlık EKLEME.** Blog CMS'i yazı başlığını zaten H1 olarak basar (başlık ayrı iletilir); gövdede ikinci bir H1 çift-H1/SEO sorunudur. Taslakta H1 varsa **H2'ye çevir** — `demote_h1(body)` (build akışının EN SON adımı, ToC `</h1>` çapasıyla enjekte edildikten sonra). ToC yalnız h2/h3'ten beslendiği için başlık H2'si ToC'ye girmez. (Başlığın gövdede hiç görünmemesini istiyorsan H2'yi de kaldırabilirsin; varsayılan: H2'ye çevir.)
+- **Gövde TEK bir H1 ile BAŞLAR (ilk başlık = yazı başlığı, H1).** Bu kural eskiden tersineydi (gövdeye H1 ekleme, H2'ye çevir); **ARTIK her blog yazısı gövdede bir H1 ile başlar.** `ensure_leading_h1(body)` build akışının EN SON adımıdır: taslakta H1 varsa KORUR, yoksa gövdedeki ilk başlığı (h2-h6) H1'e yükseltir. Gövdede yalnız **1 adet H1** olsun; bölüm başlıkları H2/H3 kalır. ToC yalnız h2/h3'ten beslendiği için H1 ToC'ye girmez. (`demote_h1` DEPRECATED — artık H1'i korur, çağırma.)
+- **Üst meta header / tarih-marka chip'i EKLEME.** Site/CMS yazının eklenme tarihini ve GAME+ marka adını zaten gösteriyor; gövdeye `render_meta` ile ikinci bir tarih/marka şeridi koymak tekrar olur (`render_meta` DEPRECATED; çağırma).
 - Görsel alt text, caption, figure açıklaması **EKLEME**.
 - Schema markup / JSON-LD **EKLEME**.
 - Bariz/gereksiz info-card alanları koyma (örn. "Yayın Tarihi / Kategori"; bunlar CMS'te zaten belli). GFN'de info-card VAR (4 metrik), ama metrikleri yazının türüne göre seç (bkz. kural 10).
@@ -85,6 +86,16 @@ Tür rozeti markanın **linklenebilir GFN kategorilerinden** birine fit ediyorsa
 ```python
 # Saf rozet -> kategori URL'i; birleşik/eşleşmeyen -> None (category_url_for birleşiği zaten eler).
 for (name, badge, color, meta, vid) in games:
-    href = category_url_for(badge)
-    inline = render_game_h3_inline(anchor, name, badge, color, meta, level=lvl, badge_href=href)
+    inline = render_game_h3_inline(anchor, name, badge, color, meta, level=lvl)  # badge_href=None (otomatik)
 ```
+
+## 13. Çıktı kontrolü (tutarlılık — her build'in SON adımı, zorunlu)
+Her yazının **aynı iskeletle** çıkması kritik. Build'in en sonunda final body üzerinde otomatik kontrol çalıştır:
+```python
+from gameplus_blog_components import verify_output, print_report
+res = verify_output(final_body, blog_type="general", n_games=12, expect_faq=True)  # GFN: blog_type="gfn"
+print_report(res)        # FAIL varsa TESLİM ETME, düzelt
+```
+`verify_output` programatik olarak şunları doğrular: **tek H1 + ilk başlık H1**, **meta header yok**, ANIMATED_BORDER_STYLE 1x, **em dash yok**, floating ToC + TLDR (3-6 madde) + info-card var, (`expect_faq`) FAQ accordion, (`n_games` verildiyse) **inline oyun başlığı = card-row = oyun sayısı** (düz `<hN>Oyun</hN>` kalmamış), YouTube embed `aspect-ratio` (kare-bug yok), PlayStation uyarısı. **FAIL = çıktı kuralı ihlali.** WARN = bağlama göre değerlendir.
+
+Yargı gerektiren (otomatik kontrol edilemeyen) maddeler için **`references/qa-checklist.md`**'yi gözden geçir: yazarın cümleleri korunmuş mu, her oyun inline başlık + doğru tür/stüdyo/yıl taşıyor mu, tür taksonomisi tutarlı mı, CTA dürüstlüğü, lisans hatırlatması, GFN tarih sütununda "-" kuralı, PlayStation bağlamı.
